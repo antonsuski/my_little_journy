@@ -1,0 +1,9 @@
+#ifndef TUTORIALCONFIG_H_IN
+#define TUTORIALCONFIG_H_IN
+
+#endif // TUTORIALCONFIG_H_IN
+
+// clang-format off
+#define Tutorial_VERSION_MAJOR @Tutorial_VERSION_MAJOR@
+#define Tutorial_VERSION_MINOR @Tutorial_VERSION_MINOR@
+//clang-format on
