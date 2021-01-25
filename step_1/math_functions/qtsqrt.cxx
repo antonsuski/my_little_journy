@@ -1,6 +1,8 @@
 #include "qtsqrt.hxx"
 
-int sqrt(int a, int b)
+#include <cmath>
+
+int lol(int a)
 {
-    return a * b;
+    return sqrt(a);
 }

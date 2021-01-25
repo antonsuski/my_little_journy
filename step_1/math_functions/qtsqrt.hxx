@@ -1,3 +1,3 @@
 #pragma once
 
-int sqrt(int, int);
+int lol(int);
