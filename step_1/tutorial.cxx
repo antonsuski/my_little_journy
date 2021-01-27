@@ -18,7 +18,7 @@ int main(int argc, char** argv)
     }
 
 #ifdef USE_MYMATH
-    mysqrt(16.f);
+    matlib::mysqrt(16.f);
 
 #else
     std::cout << sqrt(4) << std::endl;

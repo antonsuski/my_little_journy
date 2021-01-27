@@ -2,22 +2,12 @@
 #include <iostream>
 
 #include "Table.h"
-#include "TutorialConfig.h"
+//#include "TutorialConfig.h"
 #include "qtsqrt.hxx"
-
-int lol(int x)
+namespace matlib
 {
-    //#if defined(HAVE_LOG) && defined(HAVE_EXP)
-    //    double result = exp(log(x) * 0.5);
-    //    std::cout << "Computing sqrt of " << x << " to be " << result
-    //              << " using log and exp" << std::endl;
-    //#else
-    double result = x;
-    //#endif
-
-    return result;
-}
-
+namespace detail
+{
 double mysqrt(double x)
 {
     if (x <= 0)
@@ -49,3 +39,5 @@ double mysqrt(double x)
 
     return result;
 }
+} // namespace detail
+} // namespace matlib

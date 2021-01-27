@@ -1,4 +1,16 @@
 #pragma once
 
-int    lol(int);
-double mysqrt(double x);
+#if defined(_WIN32)
+#if defined(EXPORTING_MYMATH)
+#define DECLSPEC __declspec(dllexport)
+#else
+#define DECLSPEC __declspec(dllimport)
+#endif
+#else // non windows
+#define DECLSPEC
+#endif
+
+namespace matlib
+{
+double DECLSPEC mysqrt(double x);
+}
