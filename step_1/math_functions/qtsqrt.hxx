@@ -1,3 +1,4 @@
 #pragma once
 
-int lol(int);
+int    lol(int);
+double mysqrt(double x);

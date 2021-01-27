@@ -18,7 +18,8 @@ int main(int argc, char** argv)
     }
 
 #ifdef USE_MYMATH
-    std::cout << lol(4) << std::endl;
+    mysqrt(16.f);
+
 #else
     std::cout << sqrt(4) << std::endl;
 #endif
