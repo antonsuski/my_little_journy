@@ -1,9 +1,9 @@
-#include "qtsqrt.hxx"
+#include "matlib.hxx"
 
 #include <cmath>
 
 #ifdef USE_MYMATH
-#include "mysqrt.hxx"
+#include "ml_sqrt.hxx"
 #endif
 
 namespace matlib

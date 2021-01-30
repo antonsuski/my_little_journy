@@ -2,10 +2,7 @@
 #include <iostream>
 
 #include "TutorialConfig.h"
-
-#ifdef USE_MYMATH
-#include "qtsqrt.hxx"
-#endif
+#include "matlib.hxx"
 
 int main(int argc, char** argv)
 {
@@ -17,12 +14,7 @@ int main(int argc, char** argv)
         std::cout << "Usage: " << argv[0] << " number" << std::endl;
     }
 
-#ifdef USE_MYMATH
-    matlib::mysqrt(16.f);
-
-#else
-    std::cout << sqrt(4) << std::endl;
-#endif
+    matlib::sqrt(16.f);
 
     return EXIT_SUCCESS;
 }

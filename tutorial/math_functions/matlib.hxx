@@ -1,4 +1,3 @@
-#pragma once
 
 #if defined(_WIN32)
 #if defined(EXPORTING_MYMATH)
@@ -12,5 +11,5 @@
 
 namespace matlib
 {
-double DECLSPEC mysqrt(double x);
+double DECLSPEC sqrt(double x);
 }

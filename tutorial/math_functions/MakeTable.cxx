@@ -24,5 +24,10 @@ int main(int argc, char* argv[])
         fout << "0};" << std::endl;
         fout.close();
     }
+    else
+    {
+        std::cerr << "can't generate Table.hxx" << std::endl;
+    }
+
     return fileOpen ? 0 : 1; // return 0 if wrote the file
 }
