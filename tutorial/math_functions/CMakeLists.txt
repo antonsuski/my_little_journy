@@ -12,6 +12,7 @@ if(USE_MYMATH)
 
   # first we add the executable that generates the table
   add_executable(MakeTable MakeTable.cxx)
+  target_compile_features(MakeTable PUBLIC cxx_std_17)
   add_custom_command(
     OUTPUT ${CMAKE_CURRENT_BINARY_DIR}/Table.h
     COMMAND MakeTable ${CMAKE_CURRENT_BINARY_DIR}/Table.h
@@ -29,7 +30,8 @@ if(USE_MYMATH)
   set_target_properties(ml_sqrt PROPERTIES
                         POSITION_INDEPENDENT_CODE ${BUILD_SHARED_LIBS}
                         )
-
+  set_target_properties(ml_sqrt PROPERTIES
+                        CMAKE_WINDOWS_EXPORT_ALL_SYMBOLS ${BUILD_SHARED_LIBS})
   target_link_libraries(matlib PRIVATE ml_sqrt)
 endif()
 
