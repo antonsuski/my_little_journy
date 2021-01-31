@@ -1,7 +1,14 @@
 *.user
 *.log
+*.exe
 *.autosave
-/*build*/
-/*/*build*/
+
 note*
 note.*
+_*
+
+/*build*/
+/*/*build*/
+/debug/
+/release/
+

@@ -2,6 +2,8 @@ cmake_minimum_required(VERSION 3.10)
 
 project(Tutorial VERSION 1.0 LANGUAGES CXX)
 
+set(CMAKE_DEBUG_POSTFIX d)
+
 add_library(tutorial_compiler_flags INTERFACE)
 target_compile_features(tutorial_compiler_flags INTERFACE cxx_std_11)
 
@@ -16,13 +18,14 @@ set(CMAKE_ARCHIVE_OUTPUT_DIRECTORY "${PROJECT_BINARY_DIR}")
 set(CMAKE_LIBRARY_OUTPUT_DIRECTORY "${PROJECT_BINARY_DIR}")
 set(CMAKE_RUNTIME_OUTPUT_DIRECTORY "${PROJECT_BINARY_DIR}")
 
-option(BUILD_SHARED_LIBS "Build using shared libraries" OFF)
+option(BUILD_SHARED_LIBS "Build using shared libraries" ON)
 
 configure_file(TutorialConfig.h.in TutorialConfig.h)
 
 add_subdirectory(math_functions)
-
 add_executable(Tutorial tutorial.cxx)
+
+set_target_properties(Tutorial PROPERTIES DEBUG_POSTFIX ${CMAKE_DEBUG_POSTFIX})
 
 target_link_libraries(Tutorial PUBLIC matlib)
 target_include_directories(Tutorial PUBLIC
@@ -33,7 +36,34 @@ install(TARGETS Tutorial DESTINATION bin)
 install(FILES "${PROJECT_BINARY_DIR}/TutorialConfig.h"
               DESTINATION include
               )
+install(EXPORT matlib_targets
+        FILE matlib_targets.cmake
+        DESTINATION lib/cmake/matlib
+        )
 
+include(CMakePackageConfigHelpers)
+# generate the config file that is includes the exports
+configure_package_config_file(${CMAKE_CURRENT_SOURCE_DIR}/Config.cmake.in
+  "${CMAKE_CURRENT_BINARY_DIR}/matlib_config.cmake"
+  INSTALL_DESTINATION "lib/cmake/example"
+  NO_SET_AND_CHECK_MACRO
+  NO_CHECK_REQUIRED_COMPONENTS_MACRO
+  )
+# generate the version file for the config file
+write_basic_package_version_file(
+  "${CMAKE_CURRENT_BINARY_DIR}/matlib_config_version.cmake"
+  VERSION "${Tutorial_VERSION_MAJOR}.${Tutorial_VERSION_MINOR}"
+  COMPATIBILITY AnyNewerVersion
+)
+
+# install the configuration file
+install(FILES
+  ${CMAKE_CURRENT_BINARY_DIR}/matlib_config.cmake
+  DESTINATION lib/cmake/math_functions
+  )
+export(EXPORT matlib_targets
+  FILE "${CMAKE_CURRENT_BINARY_DIR}/matlib_targets.cmake"
+)
 include(CTest)
 
 # does the application run
@@ -67,3 +97,10 @@ set(CPACK_RESOURCE_FILE_LICENSE "${CMAKE_CURRENT_SOURCE_DIR}/License.txt")
 set(CPACK_PACKAGE_VERSION_MAJOR "${Tutorial_VERSION_MAJOR}")
 set(CPACK_PACKAGE_VERSION_MINOR "${Tutorial_VERSION_MINOR}")
 include(CPack)
+
+#include("release/CPackConfig.cmake")
+
+#set(CPACK_INSTALL_CMAKE_PROJECTS
+#    "debug;Tutorial;ALL;/"
+#    "release;Tutorial;ALL;/"
+#    )

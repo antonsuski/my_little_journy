@@ -1,7 +1,9 @@
 add_library(matlib matlib.cxx)
 
 target_include_directories(matlib
-                           INTERFACE ${CMAKE_CURRENT_SOURCE_DIR}
+                           INTERFACE
+                           $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}>
+                           $<INSTALL_INTERFACE:incluide>
                            )
 
 option(USE_MYMATH "Use tutorial provided math implementation" ON)
@@ -9,10 +11,11 @@ option(USE_MYMATH "Use tutorial provided math implementation" ON)
 if(USE_MYMATH)
 
   target_compile_definitions(matlib PRIVATE "USE_MYMATH")
+  target_link_libraries(matlib PRIVATE tutorial_compiler_flags)
 
   # first we add the executable that generates the table
   add_executable(MakeTable MakeTable.cxx)
-  target_compile_features(MakeTable PUBLIC cxx_std_17)
+  target_link_libraries(MakeTable PRIVATE tutorial_compiler_flags)
   add_custom_command(
     OUTPUT ${CMAKE_CURRENT_BINARY_DIR}/Table.h
     COMMAND MakeTable ${CMAKE_CURRENT_BINARY_DIR}/Table.h
@@ -32,15 +35,21 @@ if(USE_MYMATH)
                         )
   set_target_properties(ml_sqrt PROPERTIES
                         CMAKE_WINDOWS_EXPORT_ALL_SYMBOLS ${BUILD_SHARED_LIBS})
-  target_link_libraries(matlib PRIVATE ml_sqrt)
+  target_link_libraries(matlib PRIVATE ml_sqrt tutorial_compiler_flags)
 endif()
+
+set_property(TARGET matlib PROPERTY VERSION "1.0.0")
+set_property(TARGET matlib PROPERTY SOVERSION "1")
 
 target_compile_definitions(matlib PRIVATE "EXPORTING_MYMATH")
 
 # install rules
-set(installable_libs matlib)
+set(installable_libs matlib tutorial_compiler_flags)
 if(TARGET ml_sqrt)
   list(APPEND installable_libs ml_sqrt)
 endif()
-install(TARGETS ${installable_libs} DESTINATION lib)
+install(TARGETS ${installable_libs}
+        DESTINATION lib
+        EXPORT matlib_targets
+        )
 install(FILES matlib.hxx DESTINATION include)
