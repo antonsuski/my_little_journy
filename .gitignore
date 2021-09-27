@@ -12,3 +12,5 @@ _*
 /debug/
 /release/
 
+*.o
+*.a
