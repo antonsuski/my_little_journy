@@ -2,6 +2,8 @@
 *.log
 *.exe
 *.autosave
+*.o
+*.a
 
 note*
 note.*
@@ -12,5 +14,6 @@ _*
 /debug/
 /release/
 
-*.o
-*.a
+.vscode
+
+
