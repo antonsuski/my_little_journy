@@ -15,7 +15,8 @@
 #include <unistd.h>
 
 #define PORT "3490"
-#define BACKLOG 10
+#define BACKLOG 10 // максимальное колличество поключений
+#define MAXDATASIZE 100 // максимальная длина принимаемых за раз данных
 
 void  sigchld_handler(int s);
 void* get_in_addr(struct sockaddr* sa);
