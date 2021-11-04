@@ -9,14 +9,14 @@
 int main(int argc, char* argv[])
 {
     printf("Hello, world!\n");
-    
+
     struct addrinfo hints, *res, *p;
     int             status;
     char            ipstr[INET6_ADDRSTRLEN];
 
     if (argc != 2)
     {
-        fprintf(stderr, "usage: showip hostname\n");
+        fprintf(stderr, "usage: net_prog hostname\n");
         return 1;
     }
 
