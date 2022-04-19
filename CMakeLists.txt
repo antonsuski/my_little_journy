@@ -4,3 +4,4 @@ project(tutorials VERSION 1.0 LANGUAGES C CXX)
 
 add_subdirectory(cmake_tutorial)
 add_subdirectory(network_programming_tutorial)
+add_subdirectory(cxx_tutorial)
