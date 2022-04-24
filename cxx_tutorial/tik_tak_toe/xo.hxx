@@ -10,7 +10,13 @@ enum class element
     none
 };
 
-void print_element(const element& e);
+enum class command
+{
+    set_element,
+    start,
+    end,
+    unknown
+};
 
 class field
 {
@@ -30,3 +36,8 @@ class view
 public:
     void render_field(field& f);
 };
+
+void print_element(const element& e);
+
+std::ostream& operator<<(std::ostream& out, const element& e);
+std::istream& operator>>(std::istream& in, command& c);

@@ -1,5 +1,7 @@
 #include "cnetwork.h"
 
+#define IP_LOCAL "127.0.0.1"
+
 int main(int argc, char* argv[])
 {
     int                     sockfd, new_fd; // слушать на sock_fd, новое подключение на new_fd
