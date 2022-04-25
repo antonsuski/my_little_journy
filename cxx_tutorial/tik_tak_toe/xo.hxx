@@ -10,7 +10,13 @@ enum class element
     none
 };
 
-void print_element(const element& e);
+enum class command
+{
+    set,
+    start,
+    end,
+    unknown
+};
 
 class field
 {
@@ -31,11 +37,19 @@ public:
     void render_field(field& f);
 };
 
+void print_element(const element& e);
+
+std::ostream& operator<<(std::ostream& out, const element& e);
+std::istream& operator>>(std::istream& in, command& c);
+
 class game
 {
 private:
     view  surface;
     field game_board;
+
+    bool is_game_running{ false };
+
 public:
     void run();
 };
