@@ -10,6 +10,11 @@ static std::map<command, std::string> command_map{ { command::set, "set" },
                                                    { command::start, "start" },
                                                    { command::end, "end" } };
 
+static std::map<element, std::string> element_map{
+    { element::cross, "x" },
+    { element::zerro, "o" },
+};
+
 void print_element(const element& e)
 {
     switch (e)
@@ -43,6 +48,11 @@ std::ostream& operator<<(std::ostream& out, const element& e)
     return out;
 }
 
+std::istream& operator>>(std::istream& in, element& e)
+{
+    return in;
+}
+
 std::istream& operator>>(std::istream& in, command& c)
 {
     std::string buffer;
@@ -70,13 +80,7 @@ field::field()
 {
     std::cout << "Hello from, <field> default constractor!" << std::endl;
 
-    for (auto& i : field_data)
-    {
-        for (auto& j : i)
-        {
-            j = element::none;
-        }
-    }
+    set_element_to_all(element::none);
 }
 
 bool field::set_element(const element& e, const unsigned int& x_cord,
@@ -90,6 +94,17 @@ bool field::set_element(const element& e, const unsigned int& x_cord,
     field_data[y_cord][x_cord] = e;
 
     return true;
+}
+
+void field::set_element_to_all(const element& e)
+{
+    for (auto& i : field_data)
+    {
+        for (auto& j : i)
+        {
+            j = e;
+        }
+    }
 }
 
 const std::array<std::array<element, 3>, 3>& field::get_field()
@@ -116,7 +131,7 @@ void game::run()
 
     // clang-format off
     std::cout << "Welcome to tic-tak-toe Version 1.0" << std::endl;
-    std::cout << "For strat type \"strat\"\nFor set x or o type \"set\"\nFor "
+    std::cout << "For start type \"start\"\nFor set x or o type \"set\"\nFor "
                  "end game type \"end\"\n"
               << "Good luck, and have fun!" << std::endl;
     // clang-format on
@@ -130,7 +145,7 @@ void game::run()
         {
             case command::start:
             {
-                std::cout << "strat\n";
+                std::cout << "start\n";
             }
             break;
             case command::end:
@@ -139,9 +154,20 @@ void game::run()
                 running = false;
             }
             break;
-        case command::set:
+            case command::set:
             {
+                uint16_t pos_x, pos_y;
+                element  e{ element::none };
+
                 std::cout << "set\n";
+                std::cout << "Enter position x: >";
+                std::cin >> pos_x;
+                std::cout << "Enter position y: >";
+                std::cin >> pos_y;
+                std::cout << "Enter x or o: >";
+                std::cin >> e;
+
+                game_board.set_element(e, pos_x, pos_y);
             }
             break;
         }

@@ -28,6 +28,7 @@ public:
     field();
     bool set_element(const element& e, const unsigned int& x_cord,
                      const unsigned int& y_cord);
+    void set_element_to_all(const element& e);
     const std::array<std::array<element, 3>, 3>& get_field();
 };
 
@@ -40,6 +41,7 @@ public:
 void print_element(const element& e);
 
 std::ostream& operator<<(std::ostream& out, const element& e);
+std::istream& operator>>(std::istream& in, element& e);
 std::istream& operator>>(std::istream& in, command& c);
 
 class game
