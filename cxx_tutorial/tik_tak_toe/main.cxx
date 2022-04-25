@@ -5,11 +5,16 @@
 int main(int, char**)
 {
     std::cout << "Hello world!" << std::endl;
+
     field game_board;
     view  surface;
+    game app;
+
     surface.render_field(game_board);
     game_board.set_element(element::zerro, 1, 0);
     game_board.set_element(element::cross, 0, 0);
     surface.render_field(game_board);
+    app.run();
+
     return 0;
 }

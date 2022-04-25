@@ -67,3 +67,21 @@ void view::render_field(field& f)
         std::cout << std::endl;
     }
 }
+
+void game::run()
+{
+    bool   running{ false };
+    commad c{ command::unknown }
+
+        std::cout
+        << "Welcom to tic-tak-toe Version 1.0" << std::endl;
+    std::cout << "For strat type \"strat\"\nFor set x or o type \"set\"\nFor "
+                 "end game type \"end\"\n"
+              << "Good luck, and have fun!" << std::endl;
+    while (true)
+    {
+        std::cout << ">";
+        std::cin >> c;
+        break;
+    }
+}

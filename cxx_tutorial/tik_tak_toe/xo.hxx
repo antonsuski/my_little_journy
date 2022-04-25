@@ -30,3 +30,12 @@ class view
 public:
     void render_field(field& f);
 };
+
+class game
+{
+private:
+    view  surface;
+    field game_board;
+public:
+    void run();
+};
