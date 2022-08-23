@@ -1,0 +1,6 @@
+#!/bin/sh
+
+polo () {
+	cd "$lol"
+}
+
