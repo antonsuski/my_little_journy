@@ -1,3 +1,4 @@
+# Extensions
 *.user
 *.log
 *.exe
@@ -5,14 +6,20 @@
 *.o
 *.a
 
+# Specific stuff
+
 note*
 note.*
 _*
+
+# Directories
 
 /*build*/
 /*/*build*/
 /debug/
 /release/
+
+# Config directories
 
 .vscode
 
