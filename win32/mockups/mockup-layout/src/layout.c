@@ -50,12 +50,12 @@ void calculate_layout(layout_mesh_t* mesh)
             element_size.y = mesh->mesh_size.y;
             for (size_t i = 0; i < mesh->mesh_format.x; i++)
             {
-                mesh->elements[0][i].layout_size.x     = element_size.x;
-                mesh->elements[0][i].layout_size.y     = element_size.y;
-                mesh->elements[0][i].layout_position.x = i * element_size.x;
-                mesh->elements[0][i].layout_position.y = 0;
-                mesh->elements[0][i].layout_position_in_mesh.x = i;
-                mesh->elements[0][i].layout_position_in_mesh.y = 0;
+                mesh->elements[i][0].layout_size.x     = element_size.x;
+                mesh->elements[i][0].layout_size.y     = element_size.y;
+                mesh->elements[i][0].layout_position.x = i * element_size.x;
+                mesh->elements[i][0].layout_position.y = 0;
+                mesh->elements[i][0].layout_position_in_mesh.x = i;
+                mesh->elements[i][0].layout_position_in_mesh.y = 0;
             }
 
             return;
@@ -77,12 +77,12 @@ void print_mesh(layout_mesh_t* mesh)
     for (size_t i = 0; i < mesh->mesh_format.x; i++)
     {
         printf("layout size: %d:%d \nlayout position: %d:%d \nlayout position in mesh: %d:%d \n",
-                mesh->elements[0][i].layout_size.x,
-                mesh->elements[0][i].layout_size.y,
-                mesh->elements[0][i].layout_position.x,
-                mesh->elements[0][i].layout_position.y,
-                mesh->elements[0][i].layout_position_in_mesh.x,
-                mesh->elements[0][i].layout_position_in_mesh.y);
+                mesh->elements[i][0].layout_size.x,
+                mesh->elements[i][0].layout_size.y,
+                mesh->elements[i][0].layout_position.x,
+                mesh->elements[i][0].layout_position.y,
+                mesh->elements[i][0].layout_position_in_mesh.x,
+                mesh->elements[i][0].layout_position_in_mesh.y);
     }
-    
+
 }
