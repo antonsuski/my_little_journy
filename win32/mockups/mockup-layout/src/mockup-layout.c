@@ -108,7 +108,9 @@ int main()
     mesh.mesh_position.y = 0;
     mesh.mesh_size.x     = 300;
     mesh.mesh_size.y     = 100;
+    create_layout_mesh(&mesh);
     calculate_layout(&mesh);
     print_mesh(&mesh);
+    delete_layout_mesh(&mesh);
     return 0;
 }

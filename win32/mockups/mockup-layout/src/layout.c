@@ -7,16 +7,16 @@
 
 void create_layout_mesh(layout_mesh_t* mesh)
 {
-    if (mesh->mesh_format.x == 0)
-    {
-        mesh->mesh_format.x = 1;
-        // inseart warning log;
-    }
-    if (mesh->mesh_format.y == 0)
-    {
-        mesh->mesh_format.y = 1;
-        // inseart warning log;
-    }
+    // if (mesh->mesh_format.x == 0)
+    // {
+    //     mesh->mesh_format.x = 1;
+    //     // inseart warning log;
+    // }
+    // if (mesh->mesh_format.y == 0)
+    // {
+    //     mesh->mesh_format.y = 1;
+    //     // inseart warning log;
+    // }
     mesh->elements = (layout_element_t**)malloc(mesh->mesh_format.x *
                                                 sizeof(layout_element_t*));
     for (size_t i = 0; i < mesh->mesh_format.x; i++)
@@ -70,9 +70,7 @@ void calculate_layout(layout_mesh_t* mesh)
 
 void print_mesh(layout_mesh_t* mesh)
 {
-    printf("mesh pos: %d:%d\n \
-            mesh size: %d:%d\n \
-            mesh format: %d:%d\n",
+    printf("mesh pos: %d:%d\nmesh size: %d:%d\nmesh format: %d:%d\n",
            mesh->mesh_position.x, mesh->mesh_position.y, mesh->mesh_size.x,
            mesh->mesh_size.y, mesh->mesh_format.x, mesh->mesh_format.y);
 }
