@@ -31,7 +31,7 @@ typedef struct
     POINT              mesh_format;
 } layout_mesh_t;
 
-void             create_layout_mesh(layout_mesh_t* mesh);
-void             delete_layout_mesh(layout_mesh_t* mesh);
-void             calculate_layout(layout_mesh_t* mesh);
-layout_element_t calculate_layout_element(layout_control_t);
+void create_layout_mesh(layout_mesh_t* mesh);
+void delete_layout_mesh(layout_mesh_t* mesh);
+void calculate_layout(layout_mesh_t* mesh);
+void print_mesh(layout_mesh_t* mesh);

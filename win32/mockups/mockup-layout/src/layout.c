@@ -1,10 +1,11 @@
 #include "layout.h"
 
-#include "windows.h"
+#include <windows.h>
 
-#include "memory.h"
+#include <memory.h>
+#include <stdio.h>
 
-void create_layout_mesh(layout_mesh_t* mesh, POINT* mesh_format)
+void create_layout_mesh(layout_mesh_t* mesh)
 {
     if (mesh->mesh_format.x == 0)
     {
@@ -20,7 +21,7 @@ void create_layout_mesh(layout_mesh_t* mesh, POINT* mesh_format)
                                                 sizeof(layout_element_t*));
     for (size_t i = 0; i < mesh->mesh_format.x; i++)
     {
-        mesh->elements[i] = (layout_element_t*)malloc(mesh_format->y *
+        mesh->elements[i] = (layout_element_t*)malloc(mesh->mesh_format.y *
                                                       sizeof(layout_element_t));
     }
 
@@ -65,4 +66,13 @@ void calculate_layout(layout_mesh_t* mesh)
             return;
     }
     return;
+}
+
+void print_mesh(layout_mesh_t* mesh)
+{
+    printf("mesh pos: %d:%d\n \
+            mesh size: %d:%d\n \
+            mesh format: %d:%d\n",
+           mesh->mesh_position.x, mesh->mesh_position.y, mesh->mesh_size.x,
+           mesh->mesh_size.y, mesh->mesh_format.x, mesh->mesh_format.y);
 }
