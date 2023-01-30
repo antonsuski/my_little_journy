@@ -73,4 +73,16 @@ void print_mesh(layout_mesh_t* mesh)
     printf("mesh pos: %d:%d\nmesh size: %d:%d\nmesh format: %d:%d\n",
            mesh->mesh_position.x, mesh->mesh_position.y, mesh->mesh_size.x,
            mesh->mesh_size.y, mesh->mesh_format.x, mesh->mesh_format.y);
+
+    for (size_t i = 0; i < mesh->mesh_format.x; i++)
+    {
+        printf("layout size: %d:%d \nlayout position: %d:%d \nlayout position in mesh: %d:%d \n",
+                mesh->elements[0][i].layout_size.x,
+                mesh->elements[0][i].layout_size.y,
+                mesh->elements[0][i].layout_position.x,
+                mesh->elements[0][i].layout_position.y,
+                mesh->elements[0][i].layout_position_in_mesh.x,
+                mesh->elements[0][i].layout_position_in_mesh.y);
+    }
+    
 }
