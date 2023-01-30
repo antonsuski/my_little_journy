@@ -24,20 +24,42 @@ int WINAPI wWinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance,
     // Create window
     HWND main_window = CreateWindowEx(
         0, class_name, L"Title", WS_OVERLAPPEDWINDOW, CW_USEDEFAULT,
-        CW_USEDEFAULT, 500, 500, NULL, NULL, hInstance, NULL);
+        CW_USEDEFAULT, 315, 338, NULL, NULL, hInstance, NULL);
     if (main_window == NULL)
     {
         return 0;
     }
+    // Create mesh
+    layout_mesh_t layout_mesh;
+    create_layout_mesh(0, 0, 200, 200);
 
     HWND button1 = CreateWindowEx(WS_EX_TRANSPARENT, L"button", L"text",
                                   WS_CHILD | WS_VISIBLE, 0, 0, 100, 100,
                                   main_window, NULL, hInstance, NULL);
-
-    HWND edit1 =
-        CreateWindowEx(WS_EX_TRANSPARENT, L"edit", L"text",
-                       WS_CHILD | WS_VISIBLE | ES_AUTOHSCROLL, 150, 150, 100,
-                       100, main_window, NULL, hInstance, NULL);
+    HWND button2 = CreateWindowEx(WS_EX_TRANSPARENT, L"button", L"text",
+                                  WS_CHILD | WS_VISIBLE, 0, 100, 100, 100,
+                                  main_window, NULL, hInstance, NULL);
+    HWND button3 = CreateWindowEx(WS_EX_TRANSPARENT, L"button", L"text",
+                                  WS_CHILD | WS_VISIBLE, 0, 200, 100, 100,
+                                  main_window, NULL, hInstance, NULL);
+    HWND button4 = CreateWindowEx(WS_EX_TRANSPARENT, L"button", L"text",
+                                  WS_CHILD | WS_VISIBLE, 100, 0, 100, 100,
+                                  main_window, NULL, hInstance, NULL);
+    HWND button5 = CreateWindowEx(WS_EX_TRANSPARENT, L"button", L"text",
+                                  WS_CHILD | WS_VISIBLE, 100, 100, 100, 100,
+                                  main_window, NULL, hInstance, NULL);
+    HWND button6 = CreateWindowEx(WS_EX_TRANSPARENT, L"button", L"text",
+                                  WS_CHILD | WS_VISIBLE, 100, 200, 100, 100,
+                                  main_window, NULL, hInstance, NULL);
+    HWND button7 = CreateWindowEx(WS_EX_TRANSPARENT, L"button", L"text",
+                                  WS_CHILD | WS_VISIBLE, 200, 0, 100, 100,
+                                  main_window, NULL, hInstance, NULL);
+    HWND button8 = CreateWindowEx(WS_EX_TRANSPARENT, L"button", L"text",
+                                  WS_CHILD | WS_VISIBLE, 200, 100, 100, 100,
+                                  main_window, NULL, hInstance, NULL);
+    HWND button9 = CreateWindowEx(WS_EX_TRANSPARENT, L"button", L"text",
+                                  WS_CHILD | WS_VISIBLE, 200, 200, 100, 100,
+                                  main_window, NULL, hInstance, NULL);
 
     ShowWindow(main_window, nCmdShow);
 
