@@ -9,13 +9,14 @@ typedef enum
 
 typedef struct
 {
-    HWND* hwnd;
+    HWND  hwnd;
     POINT window_size;
     POINT window_position;
 } window_descriptro_t;
 
 typedef struct
 {
+    BOOL                in_use;
     POINT               layout_size;
     POINT               layout_position;
     POINT               layout_position_in_mesh;
@@ -35,3 +36,7 @@ void create_layout_mesh(layout_mesh_t* mesh);
 void delete_layout_mesh(layout_mesh_t* mesh);
 void calculate_layout(layout_mesh_t* mesh);
 void print_mesh(layout_mesh_t* mesh);
+
+BOOL add_control_into_mesh(layout_mesh_t* mesh, HWND hwnd);
+
+layout_element_t* get_element(layout_mesh_t* mesh, HWND hwnd);

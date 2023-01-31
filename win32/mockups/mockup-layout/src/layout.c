@@ -23,6 +23,10 @@ void create_layout_mesh(layout_mesh_t* mesh)
     {
         mesh->elements[i] = (layout_element_t*)malloc(mesh->mesh_format.y *
                                                       sizeof(layout_element_t));
+        for (size_t j = 0; j < mesh->mesh_format.y; j++)
+        {
+            mesh->elements[i][j].in_use = FALSE;
+        }
     }
 
     return;
@@ -50,10 +54,12 @@ void calculate_layout(layout_mesh_t* mesh)
             element_size.y = mesh->mesh_size.y;
             for (size_t i = 0; i < mesh->mesh_format.x; i++)
             {
-                mesh->elements[i][0].layout_size.x     = element_size.x;
-                mesh->elements[i][0].layout_size.y     = element_size.y;
-                mesh->elements[i][0].layout_position.x = i * element_size.x;
-                mesh->elements[i][0].layout_position.y = 0;
+                mesh->elements[i][0].layout_size.x = element_size.x;
+                mesh->elements[i][0].layout_size.y = element_size.y;
+                mesh->elements[i][0].layout_position.x =
+                    i * element_size.x + mesh->mesh_position.x;
+                mesh->elements[i][0].layout_position.y =
+                    0 + mesh->mesh_position.y;
                 mesh->elements[i][0].layout_position_in_mesh.x = i;
                 mesh->elements[i][0].layout_position_in_mesh.y = 0;
             }
@@ -76,13 +82,55 @@ void print_mesh(layout_mesh_t* mesh)
 
     for (size_t i = 0; i < mesh->mesh_format.x; i++)
     {
-        printf("layout size: %d:%d \nlayout position: %d:%d \nlayout position in mesh: %d:%d \n",
-                mesh->elements[i][0].layout_size.x,
-                mesh->elements[i][0].layout_size.y,
-                mesh->elements[i][0].layout_position.x,
-                mesh->elements[i][0].layout_position.y,
-                mesh->elements[i][0].layout_position_in_mesh.x,
-                mesh->elements[i][0].layout_position_in_mesh.y);
+        printf("layout size: %d:%d \nlayout position: %d:%d \nlayout position "
+               "in mesh: %d:%d \n",
+               mesh->elements[i][0].layout_size.x,
+               mesh->elements[i][0].layout_size.y,
+               mesh->elements[i][0].layout_position.x,
+               mesh->elements[i][0].layout_position.y,
+               mesh->elements[i][0].layout_position_in_mesh.x,
+               mesh->elements[i][0].layout_position_in_mesh.y);
     }
+}
 
+BOOL add_control_into_mesh(layout_mesh_t* mesh, HWND hwnd)
+{
+    for (size_t i = 0; i < mesh->mesh_format.x; i++)
+    {
+        for (size_t j = 0; j < mesh->mesh_format.y; j++)
+        {
+            if (mesh->elements[i][j].in_use == FALSE)
+            {
+                RECT rect;
+                GetWindowRect(hwnd, &rect);
+                MapWindowPoints(HWND_DESKTOP, GetParent(hwnd), (LPPOINT)&rect,
+                                2);
+                mesh->elements[i][j].wnd_desc.window_position.x = rect.left;
+                mesh->elements[i][j].wnd_desc.window_position.y = rect.top;
+                mesh->elements[i][j].wnd_desc.window_size.x =
+                    abs(rect.right - rect.left);
+                mesh->elements[i][j].wnd_desc.window_size.y =
+                    abs(rect.bottom - rect.top);
+                mesh->elements[i][j].wnd_desc.hwnd = hwnd;
+                mesh->elements[i][j].in_use        = TRUE;
+                return TRUE;
+            }
+        }
+    }
+    return FALSE;
+}
+
+layout_element_t* get_element(layout_mesh_t* mesh, HWND hwnd)
+{
+    for (size_t i = 0; i < mesh->mesh_format.x; i++)
+    {
+        for (size_t j = 0; j < mesh->mesh_format.y; j++)
+        {
+            if (mesh->elements[i][j].wnd_desc.hwnd == hwnd)
+            {
+                return &mesh->elements[i][j];
+            }
+        }
+    }
+    return NULL;
 }
