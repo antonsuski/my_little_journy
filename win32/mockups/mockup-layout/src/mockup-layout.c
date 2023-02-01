@@ -43,22 +43,33 @@ int WINAPI wWinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance,
     create_layout_mesh(&mesh);
     calculate_layout(&mesh);
 
-    HWND button1 = CreateWindowEx(WS_EX_TRANSPARENT, L"BUTTON", L"text",
-                                  WS_CHILD | WS_VISIBLE, 0, 0, 100, 100,
+    WNDCLASS wbc = {};
+    const wchar_t wbc_name[] = L"BUTTON";
+    // wbc.lpfnWndProc = btn_proc;
+    // wbc.hInstance = hInstance;
+    // wbc.lpszClassName = wbc_name;
+    // RegisterClass(&wbc);
+    HWND button1 = CreateWindow(wbc_name, L"text",
+                                  WS_CHILD | WS_VISIBLE | BS_DEFPUSHBUTTON, 0, 0, 100, 100,
                                   main_window, NULL, hInstance, NULL);
+    if (button1 == NULL)
+    {
+        MessageBox(NULL,L"kekw",L"kekw",MB_OK);
+    }
+    
+    add_control_into_mesh(&mesh, button1);
+    origin_btn_proc = (WNDPROC)SetWindowLongPtr(button1, GWLP_WNDPROC, (LONG_PTR)btn_proc);
+
     // HWND button2 = CreateWindowEx(WS_EX_TRANSPARENT, L"button", L"text",
     //                               WS_CHILD | WS_VISIBLE, 0, 100, 100, 100,
     //                               main_window, NULL, hInstance, NULL);
     // HWND button3 = CreateWindowEx(WS_EX_TRANSPARENT, L"button", L"text",
     //                               WS_CHILD | WS_VISIBLE, 0, 200, 100, 100,
     //                               main_window, NULL, hInstance, NULL);
-    add_control_into_mesh(&mesh, button1);
-    origin_btn_proc = (WNDPROC)SetWindowLongPtr(button1, GWLP_WNDPROC, (LONG_PTR)btn_proc);
     // HWND button4 = CreateWindowEx(WS_EX_TRANSPARENT, L"button", L"text",
     //                               WS_CHILD | WS_VISIBLE, 100, 0, 100, 100,
     //                               main_window, NULL, hInstance, NULL);
     // add_control_into_mesh(&mesh, button4);
-    // SetWindowLongPtr(button4, GWLP_WNDPROC, (LONG_PTR)btn_proc);
     // HWND button5 = CreateWindowEx(WS_EX_TRANSPARENT, L"button", L"text",
     //                               WS_CHILD | WS_VISIBLE, 100, 100, 100, 100,
     //                               main_window, NULL, hInstance, NULL);
@@ -74,7 +85,6 @@ int WINAPI wWinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance,
     // HWND button9 = CreateWindowEx(WS_EX_TRANSPARENT, L"button", L"text",
     //                               WS_CHILD | WS_VISIBLE, 200, 200, 100, 100,
     //                               main_window, NULL, hInstance, NULL);
-
     ShowWindow(main_window, nCmdShow);
 
     MSG msg = {};
@@ -112,36 +122,38 @@ LRESULT CALLBACK wnd_proc(HWND hwnd, UINT umsg, WPARAM wparam, LPARAM lparam)
 
 LRESULT CALLBACK btn_proc(HWND hwnd, UINT umsg, WPARAM wparam, LPARAM lparam)
 {
-    // switch (umsg)
-    // {
-    //     // case WM_CREATE:
-    //     // {
-    //     //     MessageBox(NULL, L"on create", L"kkew", MB_OK);
-    //     //     layout_element_t* elem = get_element(&mesh, hwnd);
-    //     //     if (elem == NULL)
-    //     //     {
-    //     //         MessageBox(NULL, L"can't get elem", L"kkew", MB_OK);
-    //     //         return 0;
-    //     //     }
-    //     //     SetWindowPos(hwnd, NULL, elem->layout_position.x, elem->layout_position.y, elem->layout_size.x, elem->layout_size.y, SWP_NOZORDER | SWP_NOACTIVATE);
-    //     //     return 0;
-    //     // }
-    //     // case WM_DESTROY:
-    //     // {
-    //     //     PostQuitMessage(0);
-    //     //     return 0;
-    //     // }
-    //     // case WM_PAINT:
-    //     // {
-    //     //     PAINTSTRUCT ps;
-    //     //     HDC         hdc = BeginPaint(hwnd, &ps);
-    //     //     FillRect(hdc, &ps.rcPaint, (HBRUSH)(COLOR_WINDOW + 1));
-    //     //     EndPaint(hwnd, &ps);
-    //     //     return 0;
-    //     // }
-    // }
-    // return CallWindowProc((WNDPROC)origin_btn_proc, hwnd,umsg, wparam, lparam);
-    return DefWindowProc(hwnd, umsg, wparam, lparam);
+    switch (umsg)
+    {
+        // case WM_CREATE:
+        // {
+        //     // MessageBox(hwnd, L"on create", L"kkew", MB_OK);
+        //     // layout_element_t* elem = get_element(&mesh, hwnd);
+        //     // if (elem == NULL)
+        //     // {
+        //     //     MessageBox(NULL, L"can't get elem", L"kkew", MB_OK);
+        //     //     return 0;
+        //     // }
+        //     // // SetWindowPos(hwnd, NULL, elem->layout_position.x, elem->layout_position.y, elem->layout_size.x, elem->layout_size.y, SWP_SHOWWINDOW);
+        //     // SetWindowPos(hwnd, NULL, 100,100,50,50, SWP_SHOWWINDOW);
+        //     // RedrawWindow(hwnd, NULL, NULL, RDW_UPDATENOW);
+        //     return 0;
+        // }
+        case WM_LBUTTONDOWN:
+        {
+            // SetWindowPos(hwnd, NULL, 100,100,50,50, SWP_SHOWWINDOW | SWP_NOACTIVATE);
+            // UpdateWindow(hwnd);
+            // RedrawWindow(hwnd, NULL, NULL, RDW_UPDATENOW | RDW_INVALIDATE);
+            // layout_element_t* elem = get_element(&mesh, hwnd);
+            // if (elem == NULL)
+            // {
+            //     MessageBox(NULL, L"can't get elem", L"kkew", MB_OK);
+            //     return 0;
+            // }
+            // SetWindowPos(hwnd, NULL, elem->layout_position.x, elem->layout_position.y, elem->layout_size.x, elem->layout_size.y, SWP_NOMOVE | SWP_NOSIZE);
+            return 0;
+        }
+    }
+    return CallWindowProc((WNDPROC)origin_btn_proc, hwnd, umsg, wparam, lparam);
 }
 
 // #include "layout.h"
