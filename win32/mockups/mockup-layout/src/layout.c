@@ -5,15 +5,21 @@
 #include <memory.h>
 #include <stdio.h>
 
+void swap(unsigned int* a, unsigned int* b)
+{
+    unsigned int temp = *a;
+    *a = *b;
+    *b = temp;
+}
+
 void create_layout_mesh(layout_mesh_t* mesh)
 {
-    if (mesh->layout_type == HORIZONTAL && (mesh->mesh_format.y > mesh->mesh_format.x))
-    {
-        mesh->mesh_format.y = mesh->mesh_format.x ^ mesh->mesh_format.y;
-        mesh->mesh_format.x = mesh->mesh_format.x ^ mesh->mesh_format.y;
-        mesh->mesh_format.y = mesh->mesh_format.y ^ mesh->mesh_format.x;
-    }
-    
+    // if ((mesh->layout_type == HORIZONTAL && (mesh->mesh_format.y > mesh->mesh_format.x))
+    //     || (mesh->layout_type == VERTICAL && (mesh->mesh_format.x > mesh->mesh_format.y)))
+    // {
+    //     swap(mesh->mesh_format.x, mesh->mesh_format.y);
+    // }
+
     if (mesh->mesh_format.x == 0 || mesh->layout_type == VERTICAL)
     {
         mesh->mesh_format.x = 1;
@@ -80,13 +86,32 @@ void calculate_layout(layout_mesh_t* mesh)
                 mesh->elements[0][i].layout_size.x = element_size.x;
                 mesh->elements[0][i].layout_size.y = element_size.y;
                 mesh->elements[0][i].layout_position.x =
-                    0 + mesh->mesh_position.x;
+                    mesh->mesh_position.x;
                 mesh->elements[0][i].layout_position.y =
-                    i * element_size.x + mesh->mesh_position.y;
+                    i * element_size.y + mesh->mesh_position.y;
                 mesh->elements[0][i].layout_position_in_mesh.x = 0;
                 mesh->elements[0][i].layout_position_in_mesh.y = i;
             }
         }
+        break;
+        case GRID:
+        {
+            for (size_t i = 0; i < mesh->mesh_format.x; i++)
+            {
+                for (size_t j = 0; j < mesh->mesh_format.y; j++)
+                {
+                    mesh->elements[i][j].layout_size.x = element_size.x;
+                    mesh->elements[i][j].layout_size.y = element_size.y;
+                    mesh->elements[i][j].layout_position.x =
+                        i * element_size.x + mesh->mesh_position.x;
+                    mesh->elements[i][j].layout_position.y =
+                        j * element_size.y + mesh->mesh_position.y;
+                    mesh->elements[i][j].layout_position_in_mesh.x = i;
+                    mesh->elements[i][j].layout_position_in_mesh.y = j;
+                }
+            }
+        }
+        break;
         default:
             return;
     }
