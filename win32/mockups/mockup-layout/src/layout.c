@@ -14,29 +14,29 @@ void swap(unsigned int* a, unsigned int* b)
 
 void create_layout_mesh(layout_mesh_t* mesh)
 {
-    // if ((mesh->layout_type == HORIZONTAL && (mesh->mesh_format.y > mesh->mesh_format.x))
-    //     || (mesh->layout_type == VERTICAL && (mesh->mesh_format.x > mesh->mesh_format.y)))
+    // if ((mesh->layout_type == HORIZONTAL && (mesh->format.y > mesh->format.x))
+    //     || (mesh->layout_type == VERTICAL && (mesh->format.x > mesh->format.y)))
     // {
-    //     swap(mesh->mesh_format.x, mesh->mesh_format.y);
+    //     swap(mesh->format.x, mesh->format.y);
     // }
 
-    if (mesh->mesh_format.x == 0 || mesh->layout_type == VERTICAL)
+    if (mesh->format.x == 0 || mesh->layout_type == VERTICAL)
     {
-        mesh->mesh_format.x = 1;
+        mesh->format.x = 1;
         // inseart warning log;
     }
-    if (mesh->mesh_format.y == 0 || mesh->layout_type == HORIZONTAL)
+    if (mesh->format.y == 0 || mesh->layout_type == HORIZONTAL)
     {
-        mesh->mesh_format.y = 1;
+        mesh->format.y = 1;
         // inseart warning log;
     }
-    mesh->elements = (layout_element_t**)malloc(mesh->mesh_format.x *
+    mesh->elements = (layout_element_t**)malloc(mesh->format.x *
                                                 sizeof(layout_element_t*));
-    for (size_t i = 0; i < mesh->mesh_format.x; i++)
+    for (size_t i = 0; i < mesh->format.x; i++)
     {
-        mesh->elements[i] = (layout_element_t*)malloc(mesh->mesh_format.y *
+        mesh->elements[i] = (layout_element_t*)malloc(mesh->format.y *
                                                       sizeof(layout_element_t));
-        for (size_t j = 0; j < mesh->mesh_format.y; j++)
+        for (size_t j = 0; j < mesh->format.y; j++)
         {
             mesh->elements[i][j].in_use = FALSE;
         }
@@ -47,7 +47,7 @@ void create_layout_mesh(layout_mesh_t* mesh)
 
 void delete_layout_mesh(layout_mesh_t* mesh)
 {
-    for (size_t i = 0; i < mesh->mesh_format.x; i++)
+    for (size_t i = 0; i < mesh->format.x; i++)
     {
         free(mesh->elements[i]);
     }
@@ -59,21 +59,21 @@ void delete_layout_mesh(layout_mesh_t* mesh)
 void calculate_layout(layout_mesh_t* mesh)
 {
     POINT element_size;
-    element_size.x = mesh->mesh_size.x / mesh->mesh_format.x;
-    element_size.y = mesh->mesh_size.y / mesh->mesh_format.y;
+    element_size.x = mesh->size.x / mesh->format.x;
+    element_size.y = mesh->size.y / mesh->format.y;
 
     switch (mesh->layout_type)
     {
         case HORIZONTAL:
         {
-            for (size_t i = 0; i < mesh->mesh_format.x; i++)
+            for (size_t i = 0; i < mesh->format.x; i++)
             {
                 mesh->elements[i][0].layout_size.x = element_size.x;
                 mesh->elements[i][0].layout_size.y = element_size.y;
                 mesh->elements[i][0].layout_position.x =
-                    i * element_size.x + mesh->mesh_position.x;
+                    i * element_size.x + mesh->position.x;
                 mesh->elements[i][0].layout_position.y =
-                    0 + mesh->mesh_position.y;
+                    0 + mesh->position.y;
                 mesh->elements[i][0].layout_position_in_mesh.x = i;
                 mesh->elements[i][0].layout_position_in_mesh.y = 0;
             }
@@ -81,14 +81,14 @@ void calculate_layout(layout_mesh_t* mesh)
         break;
         case VERTICAL:
         {
-            for (size_t i = 0; i < mesh->mesh_format.y; i++)
+            for (size_t i = 0; i < mesh->format.y; i++)
             {
                 mesh->elements[0][i].layout_size.x = element_size.x;
                 mesh->elements[0][i].layout_size.y = element_size.y;
                 mesh->elements[0][i].layout_position.x =
-                    mesh->mesh_position.x;
+                    mesh->position.x;
                 mesh->elements[0][i].layout_position.y =
-                    i * element_size.y + mesh->mesh_position.y;
+                    i * element_size.y + mesh->position.y;
                 mesh->elements[0][i].layout_position_in_mesh.x = 0;
                 mesh->elements[0][i].layout_position_in_mesh.y = i;
             }
@@ -96,16 +96,16 @@ void calculate_layout(layout_mesh_t* mesh)
         break;
         case GRID:
         {
-            for (size_t i = 0; i < mesh->mesh_format.x; i++)
+            for (size_t i = 0; i < mesh->format.x; i++)
             {
-                for (size_t j = 0; j < mesh->mesh_format.y; j++)
+                for (size_t j = 0; j < mesh->format.y; j++)
                 {
                     mesh->elements[i][j].layout_size.x = element_size.x;
                     mesh->elements[i][j].layout_size.y = element_size.y;
                     mesh->elements[i][j].layout_position.x =
-                        i * element_size.x + mesh->mesh_position.x;
+                        i * element_size.x + mesh->position.x;
                     mesh->elements[i][j].layout_position.y =
-                        j * element_size.y + mesh->mesh_position.y;
+                        j * element_size.y + mesh->position.y;
                     mesh->elements[i][j].layout_position_in_mesh.x = i;
                     mesh->elements[i][j].layout_position_in_mesh.y = j;
                 }
@@ -121,10 +121,10 @@ void calculate_layout(layout_mesh_t* mesh)
 void print_mesh(layout_mesh_t* mesh)
 {
     printf("mesh pos: %d:%d\nmesh size: %d:%d\nmesh format: %d:%d\n",
-           mesh->mesh_position.x, mesh->mesh_position.y, mesh->mesh_size.x,
-           mesh->mesh_size.y, mesh->mesh_format.x, mesh->mesh_format.y);
+           mesh->position.x, mesh->position.y, mesh->size.x,
+           mesh->size.y, mesh->format.x, mesh->format.y);
 
-    for (size_t i = 0; i < mesh->mesh_format.x; i++)
+    for (size_t i = 0; i < mesh->format.x; i++)
     {
         printf("layout size: %d:%d \nlayout position: %d:%d \nlayout position "
                "in mesh: %d:%d \n",
@@ -139,9 +139,9 @@ void print_mesh(layout_mesh_t* mesh)
 
 BOOL add_control_into_mesh(layout_mesh_t* mesh, HWND hwnd)
 {
-    for (size_t i = 0; i < mesh->mesh_format.x; i++)
+    for (size_t i = 0; i < mesh->format.x; i++)
     {
-        for (size_t j = 0; j < mesh->mesh_format.y; j++)
+        for (size_t j = 0; j < mesh->format.y; j++)
         {
             if (mesh->elements[i][j].in_use == FALSE)
             {
@@ -166,9 +166,9 @@ BOOL add_control_into_mesh(layout_mesh_t* mesh, HWND hwnd)
 
 layout_element_t* get_element(layout_mesh_t* mesh, HWND hwnd)
 {
-    for (size_t i = 0; i < mesh->mesh_format.x; i++)
+    for (size_t i = 0; i < mesh->format.x; i++)
     {
-        for (size_t j = 0; j < mesh->mesh_format.y; j++)
+        for (size_t j = 0; j < mesh->format.y; j++)
         {
             if (mesh->elements[i][j].wnd_desc.hwnd == hwnd)
             {

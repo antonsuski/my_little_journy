@@ -39,13 +39,13 @@ int WINAPI wWinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance,
         return 0;
     }
     // Create mesh
-    mesh.mesh_format.x   = 3;
-    mesh.mesh_format.y   = 3;
+    mesh.format.x   = 3;
+    mesh.format.y   = 3;
     mesh.layout_type     = GRID;
-    mesh.mesh_position.x = 50;
-    mesh.mesh_position.y = 50;
-    mesh.mesh_size.x     = 200;
-    mesh.mesh_size.y     = 200;
+    mesh.position.x = 50;
+    mesh.position.y = 50;
+    mesh.size.x     = 200;
+    mesh.size.y     = 200;
     create_layout_mesh(&mesh);
     calculate_layout(&mesh);
 
@@ -139,8 +139,8 @@ LRESULT CALLBACK wnd_proc(HWND hwnd, UINT umsg, WPARAM wparam, LPARAM lparam)
         {
             RECT rect;
             GetWindowRect(hwnd, &rect);
-            mesh.mesh_size.x = abs(rect.right - rect.left) - (2 * mesh.mesh_position.x);
-            mesh.mesh_size.y = abs(rect.bottom - rect.top) - (2 * mesh.mesh_position.y);
+            mesh.size.x = abs(rect.right - rect.left) - (2 * mesh.position.x);
+            mesh.size.y = abs(rect.bottom - rect.top) - (2 * mesh.position.y);
             calculate_layout(&mesh);
             EnumChildWindows(hwnd, EnumChildProc, lparam);
             // RedrawWindow(hwnd, NULL, NULL, RDW_UPDATENOW | RDW_ALLCHILDREN);
@@ -189,7 +189,7 @@ LRESULT CALLBACK btn_proc(HWND hwnd, UINT umsg, WPARAM wparam, LPARAM lparam)
             GetWindowRect(hwnd, &rect);
                 wsprintf(buffer, L"pos:%d:%d\nsiz:%d:%d\nmes:%d,%d\nmes_s:%d:%d\nwnd_s:%d\nwnd_p:%d:%d\n",elem->layout_position.x, elem->layout_position.y,
                                     elem->layout_size.x, elem->layout_size.y, elem->layout_position_in_mesh.x,elem->layout_position_in_mesh.y,
-                                    mesh.mesh_size.x, mesh.mesh_size.y, abs(rect.right - rect.left), rect.left, rect.top);
+                                    mesh.size.x, mesh.size.y, abs(rect.right - rect.left), rect.left, rect.top);
                 SetWindowPos(hwnd, NULL, elem->layout_position.x, elem->layout_position.y, elem->wnd_desc.window_size.x, elem->wnd_desc.window_size.y, SWP_SHOWWINDOW | SWP_NOACTIVATE);
                 MessageBox(hwnd, buffer, L"laout elem", MB_OK);
             // }
@@ -221,13 +221,13 @@ BOOL CALLBACK EnumChildProc(HWND hwnd, LPARAM lparam)
 // int main()
 // {
 //     layout_mesh_t mesh;
-//     mesh.mesh_format.x   = 3;
-//     mesh.mesh_format.y   = 1;
+//     mesh.format.x   = 3;
+//     mesh.format.y   = 1;
 //     mesh.layout_type     = HORIZONTAL;
-//     mesh.mesh_position.x = 55;
-//     mesh.mesh_position.y = 99;
-//     mesh.mesh_size.x     = 300;
-//     mesh.mesh_size.y     = 100;
+//     mesh.position.x = 55;
+//     mesh.position.y = 99;
+//     mesh.size.x     = 300;
+//     mesh.size.y     = 100;
 //     create_layout_mesh(&mesh);
 //     calculate_layout(&mesh);
 //     print_mesh(&mesh);

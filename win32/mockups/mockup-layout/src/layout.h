@@ -27,9 +27,9 @@ typedef struct
 {
     layout_element_t** elements;
     layout_t           layout_type;
-    POINT              mesh_position;
-    POINT              mesh_size;
-    POINT              mesh_format;
+    POINT              position;
+    POINT              size;
+    POINT              format;
 } layout_mesh_t;
 
 void create_layout_mesh(layout_mesh_t* mesh);
