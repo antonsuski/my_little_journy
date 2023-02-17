@@ -12,8 +12,8 @@ all_cfiles:=$(call rwildcard, $(src_dir),*.c)
 all_cfiles:=$(call rwildcard, $(src_dir),*.h)
 all_ofiles:=$(addsuffix .o, $(basename $(notdir $(call rwildcard, $(src_dir),*.c))))
 
-# link_flags:= -static -lversion -lcomctl32 -lws2_32 -municode -mwindows
-link_flags:= -static
+link_flags:= -static -lversion -lcomctl32 -lws2_32 -municode -mwindows
+# link_flags:= -static
 cmp_flags:= -O2 -m64 -std=c99 -g
 
 $(app_name): $(all_ofiles)
