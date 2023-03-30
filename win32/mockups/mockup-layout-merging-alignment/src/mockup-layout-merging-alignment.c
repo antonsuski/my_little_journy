@@ -178,11 +178,13 @@ LRESULT CALLBACK wnd_proc(HWND hwnd, UINT umsg, WPARAM wparam, LPARAM lparam)
         {
             RECT rect;
             GetClientRect(hwnd, &rect);
-            mesh.size.x = abs(rect.right - rect.left) - (2 * mesh.position.x);
-            mesh.size.y = abs(rect.bottom - rect.top) - (2 * mesh.position.y);
+            // GetWindowRect(hwnd, &rect);
+            mesh.position.x = 0;
+            mesh.position.y = 0;
+            mesh.size.x = rect.right - rect.left;
+            mesh.size.y = rect.bottom - rect.top;
             calculate_layout(&mesh);
             redraw_mesh(&mesh);
-            RedrawWindow(hwnd, NULL, NULL, RDW_UPDATENOW | RDW_ALLCHILDREN | RDW_INVALIDATE);
             return 0;
         }
     }
@@ -195,32 +197,35 @@ LRESULT CALLBACK btn_proc(HWND hwnd, UINT umsg, WPARAM wparam, LPARAM lparam)
     static HWND mousehovered_window_handle = NULL;
     switch (umsg)
     {
-        case WM_LBUTTONDOWN:
-        {
-            layout_element_t* elem = get_element(&mesh, hwnd);
-            if (elem == NULL)
-            {
-                MessageBox(NULL, L"can't get elem", L"kkew", MB_OK);
-                return 0;
-            }
-            RECT rect;
-            GetWindowRect(hwnd, &rect);
-            wsprintf(buffer,
-                     L"pos:%d:%d\nsiz:%d:%d\nmes:%d,%d\nmes_s:%d:%d\nwnd_s:%"
-                     L"d\nwnd_p:%d:%d\n",
-                     elem->layout_position.x, elem->layout_position.y,
-                     elem->layout_size.x, elem->layout_size.y,
-                     elem->layout_position_in_mesh.x,
-                     elem->layout_position_in_mesh.y, mesh.size.x, mesh.size.y,
-                     abs(rect.right - rect.left), rect.left, rect.top);
+        // case WM_LBUTTONDOWN:
+        // {
+        //     layout_element_t* elem = get_element(&mesh, hwnd);
+        //     if (elem == NULL)
+        //     {
+        //         // MessageBox(NULL, L"can't get elem", L"kkew", MB_OK);
+        //         return 0;
+        //     }
+        //     RECT rect;
+        //     GetWindowRect(hwnd, &rect);
+        //     int res_x, res_y;
+        //     res_x = rect.right - rect.left;
+        //     res_y = rect.bottom - rect.top;
+        //     wsprintf(buffer,
+        //              L"pos:%d:%d\nsiz:%d:%d\nmes:%d,%d\nmes_s:%d:%d\nwnd_s:%"
+        //              L"d:%d\nwnd_p:%d:%d\n",
+        //              elem->layout_position.x, elem->layout_position.y,
+        //              elem->layout_size.x, elem->layout_size.y,
+        //              elem->layout_position_in_mesh.x,
+        //              elem->layout_position_in_mesh.y, mesh.size.x, mesh.size.y,
+        //              rect.right - rect.left, rect.bottom - rect.top ,rect.left, rect.top);
             // SetWindowPos(hwnd, NULL, elem->layout_position.x,
             //              elem->layout_position.y, elem->wnd_desc.window_size.x,
             //              elem->wnd_desc.window_size.y,
             //              SWP_SHOWWINDOW | SWP_NOACTIVATE);
-            MessageBox(hwnd, buffer, L"laout elem", MB_OK);
-            return 0;
-        }
-        break;
+            // MessageBox(hwnd, buffer, L"laout elem", MB_OK);
+            // return 0;
+        // }
+        // break;
     }
     return CallWindowProc((WNDPROC)origin_btn_proc, hwnd, umsg, wparam, lparam);
 }
