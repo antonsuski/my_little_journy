@@ -22,6 +22,6 @@ public:
     x86_decoder(/* args */);
     ~x86_decoder();
 
-    void decode_instruction(std::vector<uint8_t> instruction);
+    void decode_instruction(const std::vector<uint8_t>& instruction);
 };
 } // namespace binary_decoder
