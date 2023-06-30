@@ -12,7 +12,6 @@ int main(int argc, char const* argv[])
 {
     binary_decoder::x86_decoder decoder;
     std::cout << "Hello, from decoder!" << std::endl;
-    // decoder.decode_instruction({ 0x89, 0xD9 });
 
     if (argc > 1)
     {
@@ -23,6 +22,11 @@ int main(int argc, char const* argv[])
             try
             {
                 std::ifstream binary_file{ binary, std::ios::binary };
+
+                std::filesystem::path out_asm_name{ binary.filename().string() +
+                                                    ".asm" };
+                std::fstream          out_asm_file{ out_asm_name,
+                                           std::ios::out | std::ios::trunc };
 
                 if (!binary_file)
                 {
@@ -36,8 +40,8 @@ int main(int argc, char const* argv[])
                 {
                     std::cout << std::bitset<8>{ i } << " ";
                 }
-                std::cout << std::endl;
-                decoder.decode_instruction(buffer);
+
+                out_asm_file << decoder.decode_instruction(buffer).str();
             }
             catch (const std::exception& e)
             {

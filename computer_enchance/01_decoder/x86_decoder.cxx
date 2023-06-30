@@ -15,6 +15,7 @@
 #include <iomanip>
 #include <iostream>
 #include <map>
+#include <sstream>
 #include <string_view>
 
 struct bitset4_cmp
@@ -72,12 +73,14 @@ x86_decoder::~x86_decoder()
     std::cout << __func__ << std::endl;
 }
 
-void x86_decoder::decode_instruction(const std::vector<uint8_t>& instruction)
+std::stringstream x86_decoder::decode_instruction(
+    const std::vector<uint8_t>& instruction)
 {
     std::cout << __func__ << std::endl;
     std::cout << "\n[Instruction]:\n";
 
-    std::string buffer;
+    std::stringstream buffer;
+
     std::string opcode_buffer;
     std::string destenation_buffer;
     std::string source_buffer;
@@ -90,92 +93,87 @@ void x86_decoder::decode_instruction(const std::vector<uint8_t>& instruction)
     std::bitset<3> reg{};
     std::bitset<3> rm{};
 
-    for (auto&& i : instruction)
-    {
-        instruction_byte = i;
-        std::cout << instruction_byte << " ";
-    }
+    // Add "bits 16" for back compilation
+    buffer << "bits 16" << std::endl;
 
-    std::cout << std::endl;
+    std::vector<uint8_t>::const_iterator iter;
 
-    try
+    for (iter = instruction.begin(); iter != instruction.end(); ++iter)
     {
-        instruction_byte = instruction.at(0);
+        instruction_byte = *iter;
 
         w = instruction_byte.test(0);
         d = instruction_byte.test(1);
         instruction_byte >>= 2;
         opcode = instruction_byte.to_ulong();
-    }
-    catch (const std::exception& e)
-    {
-        std::cerr << e.what() << '\n';
-    }
 
-    try
-    {
-        instruction_byte = instruction.at(1);
+        ++iter;
+
+        instruction_byte = *iter;
 
         rm = instruction_byte.to_ulong();
         instruction_byte >>= rm.size();
         reg = instruction_byte.to_ulong();
         instruction_byte >>= reg.size();
         mod = instruction_byte.to_ulong();
-    }
-    catch (const std::exception& e)
-    {
-        std::cerr << e.what() << '\n';
-    }
-    std::cout << "|" << std::setw(16) << std::internal << "first byte"
-              << "|" << std::setw(17) << std::internal << "second byte"
-              << "|";
-    std::cout << "\n";
-    std::cout << " ----------------------------------\n";
-    std::cout << "| opcode | d | w | mod | reg | r/m |\n";
-    std::cout << "|" << std::setw(8) << std::internal << opcode << "|";
-    std::cout << std::setw(3) << d << "|";
-    std::cout << std::setw(3) << w << "|";
-    std::cout << std::setw(5) << mod << "|";
-    std::cout << std::setw(5) << reg << "|";
-    std::cout << std::setw(5) << rm << "|";
-    std::cout << "\n";
 
-    // for mod 11 the r/m table is the same as reg
-    if (mod == 0b11)
-    {
-        try
+        std::cout << "|" << std::setw(16) << std::internal << "first byte"
+                  << "|" << std::setw(17) << std::internal << "second byte"
+                  << "|";
+        std::cout << "\n";
+        std::cout << " ----------------------------------\n";
+        std::cout << "| opcode | d | w | mod | reg | r/m |\n";
+        std::cout << "|" << std::setw(8) << std::internal << opcode << "|";
+        std::cout << std::setw(3) << d << "|";
+        std::cout << std::setw(3) << w << "|";
+        std::cout << std::setw(5) << mod << "|";
+        std::cout << std::setw(5) << reg << "|";
+        std::cout << std::setw(5) << rm << "|";
+        std::cout << "\n";
+
+        // for mod 11 the r/m table is the same as reg
+        if (mod == 0b11)
         {
-            std::bitset<4> reg_map_key{};
-            std::bitset<4> rm_map_key{};
-
-            opcode_buffer = opcode_map.at(opcode);
-
-            reg_map_key = w.to_ulong();
-            reg_map_key <<= reg.size();
-            reg_map_key |= reg.to_ullong();
-
-            rm_map_key = w.to_ulong();
-            rm_map_key <<= rm.size();
-            rm_map_key |= rm.to_ullong();
-
-            if (d.any())
+            try
             {
-                destenation_buffer = reg_map.at(reg_map_key);
-                source_buffer      = reg_map.at(rm_map_key);
+                std::bitset<4> reg_map_key{};
+                std::bitset<4> rm_map_key{};
+
+                opcode_buffer = opcode_map.at(opcode);
+
+                reg_map_key = w.to_ulong();
+                reg_map_key <<= reg.size();
+                reg_map_key |= reg.to_ullong();
+
+                rm_map_key = w.to_ulong();
+                rm_map_key <<= rm.size();
+                rm_map_key |= rm.to_ullong();
+
+                if (d.any())
+                {
+                    destenation_buffer = reg_map.at(reg_map_key);
+                    source_buffer      = reg_map.at(rm_map_key);
+                }
+                else
+                {
+                    source_buffer      = reg_map.at(reg_map_key);
+                    destenation_buffer = reg_map.at(rm_map_key);
+                }
             }
-            else
+            catch (const std::exception& e)
             {
-                source_buffer      = reg_map.at(reg_map_key);
-                destenation_buffer = reg_map.at(rm_map_key);
+                std::cerr << e.what() << '\n';
             }
         }
-        catch (const std::exception& e)
-        {
-            std::cerr << e.what() << '\n';
-        }
+        buffer << opcode_buffer + " " + destenation_buffer + ", " +
+                      source_buffer
+               << std::endl;
+        continue;
     }
-    buffer = opcode_buffer + " " + destenation_buffer + ", " + source_buffer;
-    std::cout << buffer << std::endl;
+
+    std::cout << buffer.str() << std::endl;
+
+    return buffer;
 }
 
 } // namespace binary_decoder
