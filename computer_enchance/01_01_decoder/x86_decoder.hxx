@@ -23,7 +23,6 @@ public:
     x86_decoder(/* args */);
     ~x86_decoder();
 
-    std::stringstream decode_instruction(
-        const std::vector<uint8_t>& instruction);
+    std::stringstream decode(const std::vector<uint8_t>& instruction);
 };
 } // namespace binary_decoder

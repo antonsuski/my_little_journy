@@ -38,11 +38,13 @@ int main(int argc, char const* argv[])
 
                 for (auto&& i : buffer)
                 {
+                    signed char num = static_cast<signed char>(
+                        std::bitset<8>{ i }.to_ulong());
                     std::cout << std::bitset<8>{ i } << " "
-                              << std::bitset<8>{ i }.to_ulong();
+                              << static_cast<int>(num) << std::endl;
                 }
 
-                // out_asm_file << decoder.decode_instruction(buffer).str();
+                out_asm_file << decoder.decode(buffer).str();
             }
             catch (const std::exception& e)
             {

@@ -41,7 +41,7 @@ int main(int argc, char const* argv[])
                     std::cout << std::bitset<8>{ i } << " ";
                 }
 
-                out_asm_file << decoder.decode_instruction(buffer).str();
+                out_asm_file << decoder.decode(buffer).str();
             }
             catch (const std::exception& e)
             {

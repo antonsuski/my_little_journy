@@ -41,9 +41,8 @@ const static std::map<std::bitset<4>, std::string_view, bitset4_cmp> reg_map{
     { 0b1100, "sp" }, { 0b1101, "bp" }, { 0b1110, "si" }, { 0b1111, "di" }
 };
 
-const static std::map<std::bitset<6>, std::string_view, bitset6_cmp> opcode_map{
-    { 0b100010, "mov" }
-};
+const static std::map<std::bitset<6>, std::string_view, bitset6_cmp>
+    opcode_map_6bit{ { 0b100010, "mov" } };
 
 namespace binary_decoder
 {
@@ -61,7 +60,7 @@ x86_decoder::x86_decoder()
 
     std::cout << "--------------\n"
               << "[OP CODE map]:\n";
-    for (auto&& i : opcode_map)
+    for (auto&& i : opcode_map_6bit)
     {
         std::cout << i.first << " " << i.second << std::endl;
     }
@@ -73,8 +72,7 @@ x86_decoder::~x86_decoder()
     std::cout << __func__ << std::endl;
 }
 
-std::stringstream x86_decoder::decode_instruction(
-    const std::vector<uint8_t>& instruction)
+std::stringstream x86_decoder::decode(const std::vector<uint8_t>& instruction)
 {
     std::cout << __func__ << std::endl;
     std::cout << "\n[Instruction]:\n";
@@ -139,7 +137,7 @@ std::stringstream x86_decoder::decode_instruction(
                 std::bitset<4> reg_map_key{};
                 std::bitset<4> rm_map_key{};
 
-                opcode_buffer = opcode_map.at(opcode);
+                opcode_buffer = opcode_map_6bit.at(opcode);
 
                 reg_map_key = w.to_ulong();
                 reg_map_key <<= reg.size();
