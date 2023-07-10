@@ -134,10 +134,11 @@ std::stringstream x86_decoder::decode(const std::vector<uint8_t>& instruction)
 
         std::bitset<8> instruction_byte{};
         std::bitset<8> opcode{};
-        std::bitset<8> disp_lo{};
-        std::bitset<8> disp_hi{};
+        uint8_t        disp_lo{};
+        uint8_t        disp_hi{};
         std::bitset<8> data_lo{};
         std::bitset<8> data_hi{};
+        int16_t        data_buffer{};
         std::bitset<1> d{};
         std::bitset<1> w{};
         std::bitset<2> mod{};
@@ -228,7 +229,17 @@ std::stringstream x86_decoder::decode(const std::vector<uint8_t>& instruction)
                 }
                 break;
                 case 0b1100011:
-                    break;
+                {
+                    instruction_byte = *iter;
+                    w                = instruction_byte.test(0);
+
+                    instruction_byte = *(++iter);
+                    rm               = instruction_byte.to_ulong();
+                    mod              = instruction_byte.to_ulong() >> 6;
+
+                    is_mod = true;
+                }
+                break;
                 case 0b1010000:
                     break;
                 case 0b1010001:
@@ -250,7 +261,8 @@ std::stringstream x86_decoder::decode(const std::vector<uint8_t>& instruction)
                 rm_map_key <<= rm.size();
                 rm_map_key |= rm.to_ullong();
 
-                std::string disp_buffer;
+                std::string disp_buffer{};
+                std::string sign_buffer{ " + " };
                 int16_t     disp_ac_buffer{};
 
                 switch (mod.to_ulong())
@@ -260,21 +272,34 @@ std::stringstream x86_decoder::decode(const std::vector<uint8_t>& instruction)
                         ++iter;
                         ++iter;
                         disp_hi        = *iter;
-                        disp_ac_buffer = disp_hi.to_ulong();
-                        disp_ac_buffer <<= disp_lo.size();
+                        disp_ac_buffer = disp_hi;
+                        disp_ac_buffer <<= 8;
                         --iter;
                         --iter;
+
+                        if (disp_hi & 0x80)
+                        {
+                            sign_buffer = " - ";
+                        }
                     }
                     case 0b01:
                     {
                         ++iter;
                         disp_lo = *iter;
-                        if (disp_lo.any() || disp_hi.any())
+
+                        if ((disp_lo & 0x80) && (mod != 0b10))
                         {
-                            disp_ac_buffer |= disp_lo.to_ulong();
-                            disp_buffer +=
-                                " + " + std::to_string(disp_ac_buffer);
+                            sign_buffer = " - ";
+                            disp_ac_buffer |= static_cast<int8_t>(disp_lo) * -1;
                         }
+                        else
+                        {
+                            disp_ac_buffer |= disp_lo;
+                            disp_ac_buffer *= -1;
+                        }
+
+                        disp_buffer +=
+                            sign_buffer + std::to_string(disp_ac_buffer);
                     }
                     case 0b00:
                     {
