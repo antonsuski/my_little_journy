@@ -6,6 +6,7 @@
 #include <fstream>
 #include <iostream>
 #include <iterator>
+#include <stdint.h>
 #include <string>
 
 int main(int argc, char const* argv[])
@@ -35,14 +36,6 @@ int main(int argc, char const* argv[])
 
                 std::vector<uint8_t> buffer(
                     std::istreambuf_iterator<char>(binary_file), {});
-
-                for (auto&& i : buffer)
-                {
-                    signed char num = static_cast<signed char>(
-                        std::bitset<8>{ i }.to_ulong());
-                    std::cout << std::bitset<8>{ i } << " "
-                              << static_cast<int>(num) << std::endl;
-                }
 
                 out_asm_file << decoder.decode(buffer).str();
             }

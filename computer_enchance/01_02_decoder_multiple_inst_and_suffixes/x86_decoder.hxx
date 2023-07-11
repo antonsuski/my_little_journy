@@ -13,16 +13,43 @@
 
 #include <cstdint>
 #include <sstream>
+#include <string>
 #include <vector>
 
 namespace binary_decoder
 {
+struct filed
+{
+    enum type
+    {
+        none    = 0,
+        op_code = 1,
+        d       = 2,
+        w       = 3,
+        mod     = 4,
+        reg     = 5,
+        rm      = 6,
+        disp    = 7,
+    };
+
+    type   type{};
+    int8_t pos{};
+    int8_t lenth{};
+};
+
+struct x86_instruction
+{
+    uint8_t            code{};
+    std::string        name{};
+    std::vector<filed> fileds{};
+};
+
 class x86_decoder
 {
 public:
     x86_decoder(/* args */);
     ~x86_decoder();
 
-    std::stringstream decode(const std::vector<uint8_t>& instruction);
+    std::stringstream decode(const std::vector<uint8_t>& bytes);
 };
 } // namespace binary_decoder

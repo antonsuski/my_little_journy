@@ -5,5 +5,4 @@ project(decoder_multy LANGUAGES CXX C)
 add_executable(decoder_multy main.cxx
                        x86_decoder.cxx
 
-                       x86_decoder.hxx
-                       x86_instruction.hxx)
+                       x86_decoder.hxx)
