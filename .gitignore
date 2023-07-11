@@ -14,7 +14,7 @@ _*
 
 # Directories
 
-/*build*/
+*build*/
 /*/*build*/
 /debug/
 /release/
