@@ -18,6 +18,18 @@
 
 namespace binary_decoder
 {
+#define BYTE_SIZE 8
+
+struct decoder_context
+{
+    bool d{ false };
+    bool w{ false };
+    bool mod{ false };
+    bool reg{ false };
+    bool rm{ false };
+    bool disp{ false };
+};
+
 struct filed
 {
     enum type
@@ -41,6 +53,7 @@ struct x86_instruction
 {
     uint8_t            code{};
     std::string        name{};
+    std::string        description{};
     std::vector<filed> fileds{};
 };
 
