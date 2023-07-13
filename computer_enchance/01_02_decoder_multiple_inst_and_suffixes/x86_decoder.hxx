@@ -28,9 +28,16 @@ struct decoder_context
     bool reg{ false };
     bool rm{ false };
     bool disp{ false };
+
+    uint8_t d_field;
+    uint8_t w_field;
+    uint8_t mod_field;
+    uint8_t reg_field;
+    uint8_t rm_field;
+    uint8_t disp_field;
 };
 
-struct filed
+struct field
 {
     enum type
     {
@@ -44,9 +51,10 @@ struct filed
         disp    = 7,
     };
 
-    type   type{};
-    int8_t pos{};
-    int8_t lenth{};
+    type    type{};
+    uint8_t bit_mask{};
+    int8_t  pos{};
+    int8_t  byte_pos{};
 };
 
 struct x86_instruction
@@ -54,7 +62,7 @@ struct x86_instruction
     uint8_t            code{};
     std::string        name{};
     std::string        description{};
-    std::vector<filed> fileds{};
+    std::vector<field> fields{};
 };
 
 class x86_decoder
