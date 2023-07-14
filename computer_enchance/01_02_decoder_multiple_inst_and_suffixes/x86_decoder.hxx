@@ -28,6 +28,8 @@ struct decoder_context
     bool reg{ false };
     bool rm{ false };
     bool disp{ false };
+    bool disp_l{ false };
+    bool disp_h{ false };
     bool data{ false };
     bool ef_calc{ false };
 

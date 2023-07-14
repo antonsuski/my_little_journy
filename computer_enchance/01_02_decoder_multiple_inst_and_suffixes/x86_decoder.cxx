@@ -151,7 +151,8 @@ std::stringstream x86_decoder::decode(const std::vector<uint8_t>& bytes)
                         context.rm_field = (*i & field.bit_mask);
                         context.rm_field >>= field.pos;
                         byte_indecator |= field.bit_mask;
-                        if (!(context.rm_field & 0b100))
+                        if (!(context.rm_field & 0b100) ||
+                            (context.mod_field & 0b11))
                         {
                             context.ef_calc = true;
                         }
@@ -210,12 +211,14 @@ std::stringstream x86_decoder::decode(const std::vector<uint8_t>& bytes)
                             case 0b01:
                             {
                                 context.disp       = true;
+                                context.disp_l     = true;
                                 context.disp_field = *i;
                             }
                             break;
                             case 0b10:
                             {
                                 context.disp    = true;
+                                context.disp_h  = true;
                                 uint8_t disp_lo = *i;
                                 context.disp_field |= *(++i);
                                 context.disp_field <<= 8;
@@ -259,15 +262,28 @@ std::stringstream x86_decoder::decode(const std::vector<uint8_t>& bytes)
 
             if (context.disp && context.disp_field)
             {
-                if (!context.ef_calc)
+                std::string sign{ " + " };
+                int8_t      sign_mul{ 1 };
+
+                if (context.disp_l)
                 {
-                    source_buffer += " + " + std::to_string(context.disp_field);
+                    if (static_cast<int8_t>(context.disp_field) < 0)
+                    {
+                        sign     = " - ";
+                        sign_mul = -1;
+                    }
+                    source_buffer += sign + std::to_string(static_cast<int8_t>(
+                                                context.disp_field * sign_mul));
                 }
                 else
                 {
-                    source_buffer +=
-                        " + " + std::to_string(
-                                    static_cast<int16_t>(context.disp_field));
+                    if (static_cast<int16_t>(context.disp_field) < 0)
+                    {
+                        sign     = " - ";
+                        sign_mul = -1;
+                    }
+                    source_buffer += sign + std::to_string(static_cast<int16_t>(
+                                                context.disp_field * sign_mul));
                 }
             }
 
