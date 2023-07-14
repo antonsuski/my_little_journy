@@ -28,13 +28,16 @@ struct decoder_context
     bool reg{ false };
     bool rm{ false };
     bool disp{ false };
+    bool data{ false };
+    bool ef_calc{ false };
 
-    uint8_t d_field;
-    uint8_t w_field;
-    uint8_t mod_field;
-    uint8_t reg_field;
-    uint8_t rm_field;
-    uint8_t disp_field;
+    uint8_t  d_field{};
+    uint8_t  w_field{};
+    uint8_t  mod_field{};
+    uint8_t  reg_field{};
+    uint8_t  rm_field{};
+    uint16_t disp_field{};
+    uint16_t data_field{};
 };
 
 struct field
@@ -49,6 +52,7 @@ struct field
         reg     = 5,
         rm      = 6,
         disp    = 7,
+        data    = 8,
     };
 
     type    type{};
