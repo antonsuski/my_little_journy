@@ -36,7 +36,16 @@ static inline std::vector<binary_decoder::x86_instruction> instructions_map{
       { { ft::type::op_code, 0b1111'0000, 4 },
         { ft::type::w, 0b0000'1000, 3 },
         { ft::type::reg, 0b0000'0111, 0 },
-        { ft::type::data, 0b0, 0 } } }
+        { ft::type::data, 0b0, 0 } } },
+    // { 0b1100'0110,
+    //   "mov",
+    //   "mov i t r/m",
+    //   { { ft::type::op_code, 0b1111'1110, 1 },
+    //     { ft::type::w, 0b0000'0001, 0 },
+    //     { ft::type::mod, 0b1100'0000, 6 },
+    //     { ft::type::rm, 0b0000'0111, 0 },
+    //     { ft::type::disp, 0b0, 0 },
+    //     { ft::type::data, 0b0, 0 } } }
 };
 
 static inline std::map<uint8_t, std::string> regs_map{
@@ -77,10 +86,11 @@ std::stringstream x86_decoder::decode(const std::vector<uint8_t>& bytes)
 
         if (instruction != instructions_map.end())
         {
-            uint8_t     byte_indecator{ 0b0000'0000 };
             std::string instruction_buffer{};
             std::string destenation_buffer{};
             std::string source_buffer{};
+
+            parse_instruction(i, instruction, context);
 
             std::cout << instruction->description << " ";
             // std::cout << " d: " << context.d << "/"
@@ -96,163 +106,22 @@ std::stringstream x86_decoder::decode(const std::vector<uint8_t>& bytes)
             //           << " disp: " << context.disp << "/"
             //           << std::bitset<16>{ context.disp_field };
 
-            for (auto&& field : instruction->fields)
-            {
-                switch (field.type)
-                {
-                    case ft::op_code:
-                    {
-                        byte_indecator |= field.bit_mask;
-                    }
-                    break;
-                    case ft::type::d:
-                    {
-                        context.d       = true;
-                        context.d_field = (*i & field.bit_mask);
-                        context.d_field >>= field.pos;
-                        byte_indecator |= field.bit_mask;
-                        std::cout << " d: " << context.d << "/"
-                                  << std::bitset<8>{ context.d_field };
-                    }
-                    break;
-                    case ft::type::w:
-                    {
-                        context.w       = true;
-                        context.w_field = (*i & field.bit_mask);
-                        context.w_field >>= field.pos;
-                        byte_indecator |= field.bit_mask;
-                        std::cout << " w: " << context.w << "/"
-                                  << std::bitset<8>{ context.w_field };
-                    }
-                    break;
-                    case ft::type::mod:
-                    {
-                        context.mod       = true;
-                        context.mod_field = (*i & field.bit_mask);
-                        context.mod_field >>= field.pos;
-                        byte_indecator |= field.bit_mask;
-                        std::cout << " mod: " << context.mod << "/"
-                                  << std::bitset<8>{ context.mod_field };
-                    }
-                    break;
-                    case ft::type::reg:
-                    {
-                        context.reg       = true;
-                        context.reg_field = (*i & field.bit_mask);
-                        context.reg_field >>= field.pos;
-                        byte_indecator |= field.bit_mask;
-                        std::cout << " reg: " << context.reg << "/"
-                                  << std::bitset<8>{ context.reg_field };
-                    }
-                    break;
-                    case ft::type::rm:
-                    {
-                        context.rm       = true;
-                        context.rm_field = (*i & field.bit_mask);
-                        context.rm_field >>= field.pos;
-                        byte_indecator |= field.bit_mask;
-                        if (!(context.rm_field & 0b100) ||
-                            (context.mod_field & 0b11))
-                        {
-                            context.ef_calc = true;
-                        }
-
-                        std::cout << " rm: " << context.rm << "/"
-                                  << std::bitset<8>{ context.rm_field };
-                    }
-                    break;
-                    case ft::type::data:
-                    {
-                        if (context.w_field)
-                        {
-                            uint8_t data_lo = *i;
-                            context.data_field |= *(++i);
-                            context.data_field <<= BYTE_SIZE;
-                            context.data_field |= data_lo;
-                        }
-                        else
-                        {
-                            context.data_field = *i;
-                            if (*i & 0b1000'0000)
-                            {
-                                context.data_field <<= BYTE_SIZE;
-                            }
-                        }
-                        context.data = true;
-                        std::cout << " data: " << context.data << "/"
-                                  << std::bitset<16>{ context.data_field };
-                    }
-                    break;
-                    case ft::type::disp:
-                    {
-                        switch (context.mod_field)
-                        {
-                            case 0b11:
-                            {
-                                context.disp = false;
-                                --i;
-                            }
-                            break;
-                            case 0b00:
-                            {
-                                if (context.rm && context.rm_field == 0b110)
-                                {
-                                    context.disp    = true;
-                                    uint8_t disp_lo = *i;
-                                    context.disp_field |= *(++i);
-                                    context.disp_field <<= BYTE_SIZE;
-                                    context.disp_field |= disp_lo;
-                                    break;
-                                }
-                                context.disp = false;
-                                --i;
-                            }
-                            break;
-                            case 0b01:
-                            {
-                                context.disp       = true;
-                                context.disp_l     = true;
-                                context.disp_field = *i;
-                            }
-                            break;
-                            case 0b10:
-                            {
-                                context.disp    = true;
-                                context.disp_h  = true;
-                                uint8_t disp_lo = *i;
-                                context.disp_field |= *(++i);
-                                context.disp_field <<= 8;
-                                context.disp_field |= disp_lo;
-                            }
-                            break;
-                            default:
-                                break;
-                        }
-                        std::cout << " disp: " << context.disp << "/"
-                                  << std::bitset<16>{ context.disp_field };
-                    }
-                    break;
-                    default:
-                        break;
-                }
-                if (byte_indecator == 0b1111'1111)
-                {
-                    ++i;
-                    byte_indecator = 0b0000'0000;
-                }
-            }
-
             instruction_buffer = instruction->name;
             uint8_t key        = context.w_field;
             key <<= 3;
             key |= context.reg_field;
             destenation_buffer = regs_map[key];
+
             key &= 0b1111'1000;
             key |= context.rm_field;
 
             if (context.mod && (context.mod_field == 0b11))
             {
                 source_buffer = regs_map[key];
+            }
+            else if (context.mod_field == 0b00 && context.rm_field == 0b110)
+            {
+                context.direct_addr = true;
             }
             else if (context.mod)
             {
@@ -265,9 +134,14 @@ std::stringstream x86_decoder::decode(const std::vector<uint8_t>& bytes)
                 std::string sign{ " + " };
                 int8_t      sign_mul{ 1 };
 
-                if (context.disp_l)
+                if (context.direct_addr)
                 {
-                    if (static_cast<int8_t>(context.disp_field) < 0)
+                    source_buffer += std::to_string(context.disp_field);
+                }
+                else if (context.disp_l)
+                {
+                    if ((static_cast<int8_t>(context.disp_field) < 0) &&
+                        context.disp_field)
                     {
                         sign     = " - ";
                         sign_mul = -1;
@@ -277,7 +151,8 @@ std::stringstream x86_decoder::decode(const std::vector<uint8_t>& bytes)
                 }
                 else
                 {
-                    if (static_cast<int16_t>(context.disp_field) < 0)
+                    if ((static_cast<int16_t>(context.disp_field) < 0) &&
+                        context.disp_field)
                     {
                         sign     = " - ";
                         sign_mul = -1;
@@ -290,6 +165,12 @@ std::stringstream x86_decoder::decode(const std::vector<uint8_t>& bytes)
             if (context.data)
             {
                 source_buffer += std::to_string(context.data_field);
+            }
+
+            if ((source_buffer.find('+') != std::string::npos ||
+                 source_buffer.find('-') != std::string::npos))
+            {
+                context.ef_calc = true;
             }
 
             if (context.ef_calc)
@@ -313,6 +194,155 @@ std::stringstream x86_decoder::decode(const std::vector<uint8_t>& bytes)
     }
 
     return decoded_instructions_buffer;
+}
+
+bool x86_decoder::parse_instruction(
+    std::vector<uint8_t>::const_iterator&   byte_iterator,
+    std::vector<x86_instruction>::iterator& instruction,
+    decoder_context&                        context)
+{
+    uint8_t byte_indecator{ 0b0000'0000 };
+
+    for (auto&& field : instruction->fields)
+    {
+        switch (field.type)
+        {
+            case ft::op_code:
+            {
+                byte_indecator |= field.bit_mask;
+            }
+            break;
+            case ft::type::d:
+            {
+                context.d       = true;
+                context.d_field = (*byte_iterator & field.bit_mask);
+                context.d_field >>= field.pos;
+                byte_indecator |= field.bit_mask;
+                std::cout << " d: " << context.d << "/"
+                          << std::bitset<8>{ context.d_field };
+            }
+            break;
+            case ft::type::w:
+            {
+                context.w       = true;
+                context.w_field = (*byte_iterator & field.bit_mask);
+                context.w_field >>= field.pos;
+                byte_indecator |= field.bit_mask;
+                std::cout << " w: " << context.w << "/"
+                          << std::bitset<8>{ context.w_field };
+            }
+            break;
+            case ft::type::mod:
+            {
+                context.mod       = true;
+                context.mod_field = (*byte_iterator & field.bit_mask);
+                context.mod_field >>= field.pos;
+                byte_indecator |= field.bit_mask;
+                std::cout << " mod: " << context.mod << "/"
+                          << std::bitset<8>{ context.mod_field };
+            }
+            break;
+            case ft::type::reg:
+            {
+                context.reg       = true;
+                context.reg_field = (*byte_iterator & field.bit_mask);
+                context.reg_field >>= field.pos;
+                byte_indecator |= field.bit_mask;
+                std::cout << " reg: " << context.reg << "/"
+                          << std::bitset<8>{ context.reg_field };
+            }
+            break;
+            case ft::type::rm:
+            {
+                context.rm       = true;
+                context.rm_field = (*byte_iterator & field.bit_mask);
+                context.rm_field >>= field.pos;
+                byte_indecator |= field.bit_mask;
+                if (context.mod_field != 0b11)
+                {
+                    context.ef_calc = true;
+                }
+
+                std::cout << " rm: " << context.rm << "/"
+                          << std::bitset<8>{ context.rm_field };
+            }
+            break;
+            case ft::type::data:
+            {
+                if (context.w_field)
+                {
+                    uint8_t data_lo = *byte_iterator;
+                    context.data_field |= *(++byte_iterator);
+                    context.data_field <<= BYTE_SIZE;
+                    context.data_field |= data_lo;
+                }
+                else
+                {
+                    context.data_field = *byte_iterator;
+                    if (*byte_iterator & 0b1000'0000)
+                    {
+                        context.data_field <<= BYTE_SIZE;
+                    }
+                }
+                context.data = true;
+                std::cout << " data: " << context.data << "/"
+                          << std::bitset<16>{ context.data_field };
+            }
+            break;
+            case ft::type::disp:
+            {
+                switch (context.mod_field)
+                {
+                    break;
+                    case 0b00:
+                    {
+                        if (context.rm && context.rm_field == 0b110)
+                        {
+                            context.disp    = true;
+                            uint8_t disp_lo = *byte_iterator;
+                            context.disp_field |= *(++byte_iterator);
+                            context.disp_field <<= BYTE_SIZE;
+                            context.disp_field |= disp_lo;
+                            context.disp_h = true;
+                            break;
+                        }
+                        context.disp = false;
+                        byte_iterator--;
+                    }
+                    break;
+                    case 0b01:
+                    {
+                        context.disp       = true;
+                        context.disp_l     = true;
+                        context.disp_field = *byte_iterator;
+                    }
+                    break;
+                    case 0b10:
+                    {
+                        context.disp    = true;
+                        uint8_t disp_lo = *byte_iterator;
+                        context.disp_field |= *(++byte_iterator);
+                        context.disp_field <<= BYTE_SIZE;
+                        context.disp_field |= disp_lo;
+                        context.disp_h = true;
+                    }
+                    break;
+                    default:
+                        byte_iterator--;
+                        break;
+                }
+            }
+            break;
+            default:
+                break;
+        }
+        if (byte_indecator == 0b1111'1111)
+        {
+            ++byte_iterator;
+            byte_indecator = 0b0000'0000;
+        }
+    }
+    return true;
 }
 
 } // namespace binary_decoder

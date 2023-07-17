@@ -32,6 +32,7 @@ struct decoder_context
     bool disp_h{ false };
     bool data{ false };
     bool ef_calc{ false };
+    bool direct_addr{ false };
 
     uint8_t  d_field{};
     uint8_t  w_field{};
@@ -73,6 +74,10 @@ struct x86_instruction
 
 class x86_decoder
 {
+    bool parse_instruction(std::vector<uint8_t>::const_iterator&,
+                           std::vector<x86_instruction>::iterator&,
+                           decoder_context&);
+
 public:
     x86_decoder(/* args */);
     ~x86_decoder();
