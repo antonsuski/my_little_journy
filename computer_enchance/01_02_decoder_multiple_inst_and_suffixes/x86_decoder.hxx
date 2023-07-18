@@ -41,6 +41,11 @@ struct decoder_context
     uint8_t  rm_field{};
     uint16_t disp_field{};
     uint16_t data_field{};
+
+    std::string reg_buffer{};
+    std::string rm_buffer{};
+    std::string disp_buffer{};
+    std::string data_buffer{};
 };
 
 struct field

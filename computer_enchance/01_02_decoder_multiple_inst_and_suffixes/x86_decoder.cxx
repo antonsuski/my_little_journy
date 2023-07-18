@@ -110,14 +110,14 @@ std::stringstream x86_decoder::decode(const std::vector<uint8_t>& bytes)
             uint8_t key        = context.w_field;
             key <<= 3;
             key |= context.reg_field;
-            destenation_buffer = regs_map[key];
+            context.reg_buffer = regs_map[key];
 
             key &= 0b1111'1000;
             key |= context.rm_field;
 
             if (context.mod && (context.mod_field == 0b11))
             {
-                source_buffer = regs_map[key];
+                context.rm_buffer = regs_map[key];
             }
             else if (context.mod_field == 0b00 && context.rm_field == 0b110)
             {
@@ -126,7 +126,7 @@ std::stringstream x86_decoder::decode(const std::vector<uint8_t>& bytes)
             else if (context.mod)
             {
                 key &= 0b1111'0111;
-                source_buffer = ef_map[key];
+                context.rm_buffer = ef_map[key];
             }
 
             if (context.disp && context.disp_field)
@@ -136,7 +136,7 @@ std::stringstream x86_decoder::decode(const std::vector<uint8_t>& bytes)
 
                 if (context.direct_addr)
                 {
-                    source_buffer += std::to_string(context.disp_field);
+                    context.disp_buffer += std::to_string(context.disp_field);
                 }
                 else if (context.disp_l)
                 {
@@ -146,8 +146,9 @@ std::stringstream x86_decoder::decode(const std::vector<uint8_t>& bytes)
                         sign     = " - ";
                         sign_mul = -1;
                     }
-                    source_buffer += sign + std::to_string(static_cast<int8_t>(
-                                                context.disp_field * sign_mul));
+                    context.disp_buffer +=
+                        sign + std::to_string(static_cast<int8_t>(
+                                   context.disp_field * sign_mul));
                 }
                 else
                 {
@@ -157,14 +158,15 @@ std::stringstream x86_decoder::decode(const std::vector<uint8_t>& bytes)
                         sign     = " - ";
                         sign_mul = -1;
                     }
-                    source_buffer += sign + std::to_string(static_cast<int16_t>(
-                                                context.disp_field * sign_mul));
+                    context.disp_buffer +=
+                        sign + std::to_string(static_cast<int16_t>(
+                                   context.disp_field * sign_mul));
                 }
             }
 
             if (context.data)
             {
-                source_buffer += std::to_string(context.data_field);
+                context.data_buffer += std::to_string(context.data_field);
             }
 
             if ((source_buffer.find('+') != std::string::npos ||
@@ -184,11 +186,17 @@ std::stringstream x86_decoder::decode(const std::vector<uint8_t>& bytes)
                 std::swap(source_buffer, destenation_buffer);
             }
 
-            std::memset(&context, 0U, sizeof(context));
             std::cout << std::endl
-                      << instruction_buffer + " " + destenation_buffer + " , " +
-                             source_buffer
+                      << context.reg_buffer + " " + context.rm_buffer + " " +
+                             context.disp_buffer + " " + context.data_buffer
                       << std::endl;
+
+            std::memset(&context, 0U, sizeof(context));
+            // std::cout << std::endl
+            //           << instruction_buffer + " " + destenation_buffer + " ,
+            //           " +
+            //                  source_buffer
+            //           << std::endl;
         }
         std::cout << std::endl;
     }
