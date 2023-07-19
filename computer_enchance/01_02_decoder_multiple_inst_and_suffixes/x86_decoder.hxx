@@ -42,9 +42,9 @@ struct decoder_context
     uint16_t disp_field{};
     uint16_t data_field{};
 
+    std::string instruction_buffer;
     std::string reg_buffer{};
     std::string rm_buffer{};
-    std::string disp_buffer{};
     std::string data_buffer{};
 };
 
@@ -52,7 +52,7 @@ struct field
 {
     enum type
     {
-        none    = 0,
+        any     = 0,
         op_code = 1,
         d       = 2,
         w       = 3,
@@ -79,7 +79,10 @@ struct x86_instruction
 
 class x86_decoder
 {
-    bool parse_instruction(std::vector<uint8_t>::const_iterator&,
+    bool parse_first_byte(std::vector<uint8_t>::const_iterator&,
+                          std::vector<x86_instruction>::iterator&,
+                          decoder_context&);
+    bool parse_second_byte(std::vector<uint8_t>::const_iterator&,
                            std::vector<x86_instruction>::iterator&,
                            decoder_context&);
 
