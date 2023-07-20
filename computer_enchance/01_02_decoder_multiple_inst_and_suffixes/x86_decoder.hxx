@@ -45,6 +45,7 @@ struct decoder_context
     std::string instruction_buffer;
     std::string reg_buffer{};
     std::string rm_buffer{};
+    std::string disp_sign{};
     std::string data_buffer{};
 };
 
