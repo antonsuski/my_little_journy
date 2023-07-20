@@ -39,13 +39,14 @@ struct decoder_context
     uint8_t  mod_field{};
     uint8_t  reg_field{};
     uint8_t  rm_field{};
+    int8_t   disp_sign{ 1 };
     uint16_t disp_field{};
     uint16_t data_field{};
 
     std::string instruction_buffer;
     std::string reg_buffer{};
     std::string rm_buffer{};
-    std::string disp_sign{};
+    std::string disp_sign_buffer{};
     std::string data_buffer{};
 };
 

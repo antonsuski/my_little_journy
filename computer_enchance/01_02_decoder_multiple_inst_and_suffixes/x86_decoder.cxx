@@ -14,6 +14,7 @@
 #include <algorithm>
 #include <bitset>
 #include <cstring>
+#include <iomanip>
 #include <iostream>
 #include <map>
 
@@ -40,17 +41,17 @@ static inline std::vector<binary_decoder::x86_instruction> instructions_map{
           { ft::type::reg, 0b0000'0111, 0 },
           { ft::type::data, 0b1111'1111, 0 },
       } },
-    // { 0b1100'0110,
-    //   "mov",
-    //   "mov i t r/m",
-    //   {
-    //       { ft::type::op_code, 0b1111'1110, 1 },
-    //       { ft::type::w, 0b0000'0001, 0 },
-    //       { ft::type::mod, 0b1100'0000, 6 },
-    //       { ft::type::any, 0b0011'1000, 3 },
-    //       { ft::type::rm, 0b0000'0111, 0 },
-    //       { ft::type::data, 0b0, 0 },
-    //   } },
+    { 0b1100'0110,
+      "mov",
+      "mov i t r/m",
+      {
+          { ft::type::op_code, 0b1111'1110, 1 },
+          { ft::type::w, 0b0000'0001, 0 },
+          { ft::type::mod, 0b1100'0000, 6 },
+          { ft::type::any, 0b0011'1000, 3 },
+          { ft::type::rm, 0b0000'0111, 0 },
+          { ft::type::data, 0b0, 0 },
+      } },
 };
 
 static inline std::map<uint8_t, std::string> regs_map{
@@ -102,7 +103,7 @@ std::stringstream x86_decoder::decode(const std::vector<uint8_t>& bytes)
                 {
                     case ft::op_code:
                     {
-                        context.instruction_buffer = instruction->name;
+                        context.instruction_buffer = instruction->name + " ";
                         buffer += context.instruction_buffer;
                     }
                     break;
@@ -143,7 +144,7 @@ std::stringstream x86_decoder::decode(const std::vector<uint8_t>& bytes)
                         uint8_t key = context.w_field;
                         key <<= 3;
                         key |= context.reg_field;
-                        context.reg_buffer = regs_map[key];
+                        context.reg_buffer = regs_map[key] + " ";
 
                         buffer +=
                             " reg:" +
@@ -165,6 +166,7 @@ std::stringstream x86_decoder::decode(const std::vector<uint8_t>& bytes)
                         {
                             uint8_t key{ context.rm_field };
                             context.rm_buffer = ef_map[key];
+                            context.ef_calc   = true;
 
                             switch (context.mod_field)
                             {
@@ -174,10 +176,12 @@ std::stringstream x86_decoder::decode(const std::vector<uint8_t>& bytes)
                                     {
                                         context.disp       = true;
                                         context.disp_h     = true;
+                                        context.disp_l     = true;
                                         uint8_t disp_lo    = *(++i);
                                         context.disp_field = *(++i);
                                         context.disp_field <<= BYTE_SIZE;
                                         context.disp_field |= disp_lo;
+                                        context.rm_buffer = "";
                                     }
                                 }
                                 break;
@@ -204,35 +208,86 @@ std::stringstream x86_decoder::decode(const std::vector<uint8_t>& bytes)
                                     mega_key <<= 3;
                                     mega_key |= key;
                                     context.rm_buffer = regs_map[mega_key];
+                                    context.ef_calc   = false;
                                 }
                                 break;
                                 default:
                                     break;
                             }
 
-                            if (context.disp_h)
+                            if (!(context.disp_h && context.disp_l))
                             {
-                                buffer += " dips:" +
-                                          std::to_string(static_cast<int16_t>(
-                                              context.disp_field));
+                                if (context.disp_l)
+                                {
+                                    if (static_cast<int8_t>(
+                                            context.disp_field) > 0)
+                                    {
+                                        context.disp_sign_buffer = " + ";
+                                    }
+                                    else if (static_cast<int8_t>(
+                                                 context.disp_field) < 0)
+                                    {
+                                        context.disp_sign_buffer = " - ";
+                                        context.disp_sign        = -1;
+                                    }
+                                }
+                                else
+                                {
+                                    if (static_cast<int16_t>(
+                                            context.disp_field) > 0)
+                                    {
+                                        context.disp_sign_buffer = " + ";
+                                    }
+                                    else if (static_cast<int16_t>(
+                                                 context.disp_field) < 0)
+                                    {
+                                        context.disp_sign_buffer = " - ";
+                                        context.disp_sign        = -1;
+                                    }
+                                }
+                            }
+
+                            if (context.disp_h && context.disp_field)
+                            {
+                                buffer +=
+                                    " dips:" +
+                                    std::to_string(static_cast<int16_t>(
+                                                       context.disp_field) *
+                                                   context.disp_sign);
+                                context.rm_buffer +=
+                                    context.disp_sign_buffer +
+                                    std::to_string(static_cast<int16_t>(
+                                                       context.disp_field) *
+                                                   context.disp_sign);
+                            }
+                            else if (context.disp_l && context.disp_field)
+                            {
+                                buffer +=
+                                    " dips:" +
+                                    std::to_string(static_cast<int8_t>(
+                                                       context.disp_field) *
+                                                   context.disp_sign);
+                                context.rm_buffer +=
+                                    context.disp_sign_buffer +
+                                    std::to_string(static_cast<int8_t>(
+                                                       context.disp_field) *
+                                                   context.disp_sign);
                             }
                             else
                             {
                                 buffer += " dips:" +
-                                          std::to_string(static_cast<int8_t>(
-                                              context.disp_field));
+                                          std::to_string(context.disp_field);
                             }
                         }
 
-                        if ((context.disp && context.disp_field) ||
-                            (!(context.rm_field & 0b100) &&
-                             (context.mod_field == 0b00)))
+                        if (context.ef_calc)
                         {
                             context.rm_buffer.insert(0, "[");
                             context.rm_buffer.push_back(']');
                         }
 
                         buffer += " rm_buf:" + context.rm_buffer;
+                        context.rm_buffer += " ";
                     }
                     break;
                     case ft::data:
@@ -255,6 +310,8 @@ std::stringstream x86_decoder::decode(const std::vector<uint8_t>& bytes)
                             }
                         }
                         buffer += " data:" + std::to_string(context.data_field);
+                        context.data_buffer =
+                            std::to_string(context.data_field) + " ";
                     }
                     break;
                     default:
@@ -278,7 +335,16 @@ std::stringstream x86_decoder::decode(const std::vector<uint8_t>& bytes)
         {
             std::cout << std::bitset<8>{ *i } << std::endl;
         }
-        std::cout << "line: " << std::endl;
+
+        if (context.d && !context.d_field)
+        {
+            std::swap(context.reg_buffer, context.rm_buffer);
+        }
+
+        std::cout << std::setw(100) << context.instruction_buffer
+                  << context.reg_buffer << ", " << context.rm_buffer
+                  << context.data_buffer << std::endl;
+
         std::memset(&context, 0U, sizeof(context));
     }
 
