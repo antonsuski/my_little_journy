@@ -50,7 +50,17 @@ static inline std::vector<binary_decoder::x86_instruction> instructions_map{
           { ft::type::mod, 0b1100'0000, 6 },
           { ft::type::any, 0b0011'1000, 3 },
           { ft::type::rm, 0b0000'0111, 0 },
-          { ft::type::data, 0b0, 0 },
+          { ft::type::data, 0b1111'1111, 0 },
+      } },
+    { 0b1010'0000,
+      "mov",
+      "mov m/a t a/m",
+      {
+          { ft::type::op_code, 0b1111'1100, 2 },
+          { ft::type::w, 0b0000'0001, 0 },
+          { ft::type::reg, 0b0001'1100, 2, ft::sub_type::pattern },
+          { ft::type::d, 0b0000'0010, 1 },
+          { ft::type::addr, 0b1111'1111, 0 },
       } },
 };
 
@@ -98,13 +108,12 @@ std::stringstream x86_decoder::decode(const std::vector<uint8_t>& bytes)
                      instruction->fields.begin();
                  field_iter <= instruction->fields.end(); field_iter++)
             {
-
                 switch (field_iter->type)
                 {
                     case ft::op_code:
                     {
                         context.instruction_buffer = instruction->name + " ";
-                        buffer += context.instruction_buffer;
+                        buffer += instruction->description + " ";
                     }
                     break;
                     case ft::d:
@@ -280,16 +289,14 @@ std::stringstream x86_decoder::decode(const std::vector<uint8_t>& bytes)
                             }
                         }
 
-                        if (context.ef_calc)
-                        {
-                            context.rm_buffer.insert(0, "[");
-                            context.rm_buffer.push_back(']');
-                        }
-
                         buffer += " rm_buf:" + context.rm_buffer;
                         context.rm_buffer += " ";
                     }
                     break;
+                    case ft::addr:
+                    {
+                        context.addr = true;
+                    }
                     case ft::data:
                     {
                         if (context.w_field)
@@ -312,6 +319,19 @@ std::stringstream x86_decoder::decode(const std::vector<uint8_t>& bytes)
                         buffer += " data:" + std::to_string(context.data_field);
                         context.data_buffer =
                             std::to_string(context.data_field) + " ";
+
+                        if (context.addr)
+                        {
+                            context.data_buffer.insert(0, "[");
+                            context.data_buffer.insert(
+                                context.data_buffer.end() - 1, ']');
+
+                            if (context.d_field)
+                            {
+                                std::swap(context.reg_buffer,
+                                          context.data_buffer);
+                            }
+                        }
                     }
                     break;
                     default:
@@ -320,30 +340,38 @@ std::stringstream x86_decoder::decode(const std::vector<uint8_t>& bytes)
 
                 byte_indicator |= field_iter->bit_mask;
                 if (byte_indicator == 0b1111'1111 &&
-                    field_iter != instruction->fields.end())
+                    field_iter != instruction->fields.end() &&
+                    field_iter->sub_type != ft::sub_type::pattern)
                 {
-                    std::cout << std::bitset<8>{ *i } << " " << buffer
-                              << std::endl;
                     ++i;
                     byte_indicator = { 0b0000'0000 };
                     buffer.clear();
                 }
             }
             --i;
-        }
-        else
-        {
-            std::cout << std::bitset<8>{ *i } << std::endl;
+            if (context.ef_calc)
+            {
+                context.rm_buffer.insert(0, "[");
+                context.rm_buffer.insert(context.rm_buffer.end() - 1, ']');
+            }
+
+            if (context.d && !context.d_field)
+            {
+                std::swap(context.reg_buffer, context.rm_buffer);
+            }
+
+            if (context.reg_buffer.empty())
+            {
+                context.rm_buffer += ", ";
+            }
+            else
+            {
+                context.reg_buffer += ", ";
+            }
         }
 
-        if (context.d && !context.d_field)
-        {
-            std::swap(context.reg_buffer, context.rm_buffer);
-        }
-
-        std::cout << std::setw(100) << context.instruction_buffer
-                  << context.reg_buffer << ", " << context.rm_buffer
-                  << context.data_buffer << std::endl;
+        std::cout << context.instruction_buffer << context.reg_buffer
+                  << context.rm_buffer << context.data_buffer << std::endl;
 
         std::memset(&context, 0U, sizeof(context));
     }

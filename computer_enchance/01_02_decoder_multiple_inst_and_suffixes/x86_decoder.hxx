@@ -33,6 +33,7 @@ struct decoder_context
     bool data{ false };
     bool ef_calc{ false };
     bool direct_addr{ false };
+    bool addr{ false };
 
     uint8_t  d_field{};
     uint8_t  w_field{};
@@ -42,6 +43,7 @@ struct decoder_context
     int8_t   disp_sign{ 1 };
     uint16_t disp_field{};
     uint16_t data_field{};
+    uint16_t addr_field{};
 
     std::string instruction_buffer;
     std::string reg_buffer{};
@@ -63,12 +65,20 @@ struct field
         rm      = 6,
         disp    = 7,
         data    = 8,
+        addr    = 9,
     };
 
-    type    type{};
-    uint8_t bit_mask{};
-    int8_t  pos{};
-    int8_t  byte_pos{};
+    enum sub_type
+    {
+        direct  = 1,
+        pattern = 2,
+    };
+
+    type     type{};
+    uint8_t  bit_mask{};
+    int8_t   pos{};
+    int8_t   byte_pos{};
+    sub_type sub_type{ sub_type::direct };
 };
 
 struct x86_instruction
