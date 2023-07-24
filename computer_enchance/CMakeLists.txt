@@ -4,3 +4,4 @@ project(computer_enchance LANGUAGES CXX C)
 
 add_subdirectory(01_01_decoder)
 add_subdirectory(01_02_decoder_multiple_inst_and_suffixes)
+add_subdirectory(01_03_opcode_patterns)
