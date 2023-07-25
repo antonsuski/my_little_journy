@@ -37,7 +37,10 @@ int main(int argc, char const* argv[])
                 std::vector<uint8_t> buffer(
                     std::istreambuf_iterator<char>(binary_file), {});
 
-                out_asm_file << decoder.decode(buffer).str();
+                std::stringstream decoded_buffer = decoder.decode(buffer);
+
+                std::cout << decoded_buffer.str();
+                out_asm_file << decoded_buffer.str();
             }
             catch (const std::exception& e)
             {

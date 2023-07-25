@@ -23,7 +23,7 @@ using ft = binary_decoder::field;
 static inline std::vector<binary_decoder::x86_instruction> instructions_map{
     { 0b10001000,
       "mov",
-      "mov, r/m t/f r",
+      "r/m t/f r",
       {
           { ft::type::op_code, 0b11111100, 2 },
           { ft::type::d, 0b00000010, 1 },
@@ -31,56 +31,6 @@ static inline std::vector<binary_decoder::x86_instruction> instructions_map{
           { ft::type::mod, 0b11000000, 6 },
           { ft::type::reg, 0b00111000, 3 },
           { ft::type::rm, 0b00000111, 0 },
-      } },
-    { 0b1011'0000,
-      "mov",
-      "mov, i t r",
-      {
-          { ft::type::op_code, 0b1111'0000, 4 },
-          { ft::type::w, 0b0000'1000, 3 },
-          { ft::type::reg, 0b0000'0111, 0 },
-          { ft::type::data, 0b1111'1111, 0 },
-      } },
-    { 0b1100'0110,
-      "mov",
-      "mov i t r/m",
-      {
-          { ft::type::op_code, 0b1111'1110, 1 },
-          { ft::type::w, 0b0000'0001, 0 },
-          { ft::type::mod, 0b1100'0000, 6 },
-          { ft::type::any, 0b0011'1000, 3 },
-          { ft::type::rm, 0b0000'0111, 0 },
-          { ft::type::data, 0b1111'1111, 0 },
-      } },
-    { 0b1010'0000,
-      "mov",
-      "mov m/a t a/m",
-      {
-          { ft::type::op_code, 0b1111'1100, 2 },
-          { ft::type::w, 0b0000'0001, 0 },
-          { ft::type::reg, 0b0001'1100, 2, ft::sub_type::pattern },
-          { ft::type::d, 0b0000'0010, 1 },
-          { ft::type::addr, 0b1111'1111, 0 },
-      } },
-    { 0b00000000,
-      "add",
-      "mov, r/m t/f r",
-      {
-          { ft::type::op_code, 0b11111100, 2 },
-          { ft::type::d, 0b00000010, 1 },
-          { ft::type::w, 0b00000001, 0 },
-          { ft::type::mod, 0b11000000, 6 },
-          { ft::type::reg, 0b00111000, 3 },
-          { ft::type::rm, 0b00000111, 0 },
-      } },
-    { 0b00000100,
-      "add",
-      "mov, imm to acc",
-      {
-          { ft::type::op_code, 0b11111110, 1 },
-          { ft::type::w, 0b00000001, 0 },
-
-          { ft::type::data, 0b1111'1111, 0 },
       } },
 };
 
@@ -103,6 +53,19 @@ namespace binary_decoder
 x86_decoder::x86_decoder(/* args */) {}
 x86_decoder::~x86_decoder() {}
 
-std::stringstream x86_decoder::decode(const std::vector<uint8_t>& bytes) {}
+std::stringstream x86_decoder::decode(const std::vector<uint8_t>& bytes)
+{
+    std::stringstream                    buffer;
+    std::vector<uint8_t>::const_iterator bytes_iterator;
+
+    for (bytes_iterator = bytes.begin(); bytes_iterator != bytes.end();
+         bytes_iterator++)
+    {
+        std::cout << std::bitset<8>{ *bytes_iterator } << std::endl;
+        // std::vector<uint8_t>::const_iterator byte_iterator = std::find_if();
+    }
+
+    return buffer;
+}
 
 } // namespace binary_decoder
