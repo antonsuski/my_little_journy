@@ -1,8 +1,13 @@
 #pragma once
 
+#include "json.hpp"
+#include "json_fwd.hpp"
+
 #include <iostream>
+#include <string_view>
 
 namespace haversine
+
 {
 struct point
 {
@@ -15,5 +20,7 @@ struct point
 
 point generate_point(const point& x_range, const point& y_range);
 
-void generate(const float& earth_radius);
+void generate(nlohmann::json& buffer, const unsigned int& count,
+              const std::string_view& path);
+
 } // namespace haversine
