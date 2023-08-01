@@ -11,11 +11,20 @@ namespace haversine
 
 struct point
 {
-    long double x{};
-    long double y{};
+    double x{};
+    double y{};
 
     friend std::ostream& operator<<(std::ostream& out, const point& rhs);
     friend std::istream& operator>>(std::istream& in, point& rhs);
+};
+
+struct circle
+{
+    point center{};
+    float radius{};
+
+    friend std::ostream& operator<<(std::ostream& out, const circle& rhs);
+    friend std::istream& operator>>(std::istream& in, circle& rhs);
 };
 
 struct pair
@@ -27,11 +36,15 @@ struct pair
     friend std::istream& operator>>(std::istream& in, pair& rhs);
 };
 
-pair generate_point(const point& x_range, const point& y_range);
-
 double generate(nlohmann::json& buffer, const unsigned int& count,
                 const std::string_view& path);
 
-static double reference_haversine(double X0, double Y0, double X1, double Y1,
-                                  double EarthRadius);
+double generate_with_cluster(nlohmann::json& buffer, const unsigned int& count,
+                             const std::string_view& path);
+
+double reference_haversine(double X0, double Y0, double X1, double Y1,
+                           double EarthRadius);
+
+point             generate_point(const point& center, const double& radius);
+std::vector<pair> generate_clusters(const unsigned int& pairs_count);
 } // namespace haversine

@@ -18,17 +18,24 @@ int main(int argc, char* argv[])
     std::string  path{ "test.json" };
 
     // Parse arguments
-    for (size_t i = 0; i < argc; i++)
-    {
-        if (std::strcmp(argv[i], "-c") == 0)
-        {
-            count = std::stoi(argv[++i]);
-        }
-        else if (std::strcmp(argv[i], "-o") == 0)
-        {
-            path = argv[++i];
-        }
-    }
+    // for (size_t i = 0; i < argc; i++)
+    // {
+    //     if (std::strcmp(argv[i], "-c") == 0)
+    //     {
+    //         count = std::stoi(argv[++i]);
+    //     }
+    //     else if (std::strcmp(argv[i], "-o") == 0)
+    //     {
+    //         path = argv[++i];
+    //     }
+    //     else if (std::strcmp(argv[i], "--cluster") == 0)
+    //     {
+    // std::cout << haversine::generate_point({ 100, 100 }, 10)
+    //           << std::endl;
+    std::cout << haversine::generate_clusters(1000).size() << std::endl;
+    return 0;
+    //     }
+    // }
 
     // Haversine pairs generator
     nlohmann::json buffer;
