@@ -62,7 +62,8 @@ std::vector<pair> generate_clusters(const unsigned int& pairs_count)
     static const int               clusters_factor{ 64 };
     std::vector<haversine::circle> clusters;
 
-    double pairs_per_cluster{ pairs_count / clusters_factor };
+    double pairs_per_cluster{ pairs_count /
+                              static_cast<double>(clusters_factor) };
     size_t pairs_in_last_cluster{ pairs_count % clusters_factor };
 
     double counter{ 64 };
@@ -70,7 +71,15 @@ std::vector<pair> generate_clusters(const unsigned int& pairs_count)
     haversine::point points_buffer{};
     float            radius{};
 
-    for (size_t i = 0; i < counter; i++)
+    std::vector<pair> buffer;
+    int               integer = pairs_per_cluster;
+    double            modulo{};
+
+    double pairs_counters = clusters_factor *
+
+                            for (size_t i = 0; i < counter; i++){
+                                // need to add cluster feeling
+                            }
     {
         radius        = random_device::radius_gen(random_device::generator);
         points_buffer = generate_point({ 1, 1 }, 180);
@@ -84,7 +93,31 @@ std::vector<pair> generate_clusters(const unsigned int& pairs_count)
 
     std::cout << "Cluster count: " << clusters.size() << std::endl;
 
+    generate_points_per_cluster(clusters, pairs_per_cluster);
+
     return std::vector<pair>{};
+}
+
+std::vector<pair> generate_points_per_cluster(
+    const std::vector<circle>& clusters, const double& points_per_cluster)
+{
+    std::vector<pair> buffer;
+    int               integer = points_per_cluster;
+    double            modulo{};
+
+    for (auto&& cluster : clusters)
+    {
+        modulo += points_per_cluster - integer;
+
+        std::cout << points_per_cluster << " " << integer << " " << modulo
+                  << std::endl;
+
+        // do
+        // {
+
+        // } while (/* condition */);
+    }
+    return buffer;
 }
 
 std::ostream& operator<<(std::ostream& out, const point& rhs)

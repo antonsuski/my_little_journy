@@ -32,7 +32,7 @@ int main(int argc, char* argv[])
     //     {
     // std::cout << haversine::generate_point({ 100, 100 }, 10)
     //           << std::endl;
-    std::cout << haversine::generate_clusters(1000).size() << std::endl;
+    std::cout << haversine::generate_clusters(10).size() << std::endl;
     return 0;
     //     }
     // }

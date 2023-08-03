@@ -47,4 +47,6 @@ double reference_haversine(double X0, double Y0, double X1, double Y1,
 
 point             generate_point(const point& center, const double& radius);
 std::vector<pair> generate_clusters(const unsigned int& pairs_count);
+std::vector<pair> generate_points_per_cluster(
+    const std::vector<circle>& clusters, const double& points_per_cluster);
 } // namespace haversine
