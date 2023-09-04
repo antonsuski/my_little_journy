@@ -1,0 +1,3 @@
+#include "../src/resources.h"
+
+IDB_BITMAP1     BITMAP      "res\\file_24x24.bmp"

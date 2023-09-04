@@ -42,8 +42,8 @@ int WINAPI wWinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance,
         return 0;
     }
     // Create parent mesh
-    mesh.format.x    = 3;
-    mesh.format.y    = 1;
+    mesh.format.x    = 1;
+    mesh.format.y    = 3;
     mesh.layout_type = GRID;
     mesh.position.x  = 0;
     mesh.position.y  = 0;
