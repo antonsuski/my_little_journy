@@ -60,12 +60,12 @@ void calculate_layout(layout_mesh_t* mesh)
     {
         for (size_t j = 0; j < mesh->format.y; j++)
         {
-            mesh->elements[i][j].layout_size.x = element_size.x;
-            mesh->elements[i][j].layout_size.y = element_size.y;
+            mesh->elements[i][j].layout_size.x = element_size.x - (mesh->spacing.x * 2);
+            mesh->elements[i][j].layout_size.y = element_size.y - (mesh->spacing.y * 2);
             mesh->elements[i][j].layout_position.x =
-                i * element_size.x + mesh->position.x;
+                i * element_size.x + mesh->position.x + mesh->spacing.x;
             mesh->elements[i][j].layout_position.y =
-                j * element_size.y + mesh->position.y;
+                j * element_size.y + mesh->position.y + mesh->spacing.y;
             mesh->elements[i][j].layout_position_in_mesh.x = i;
             mesh->elements[i][j].layout_position_in_mesh.y = j;
 
@@ -154,7 +154,6 @@ void redraw_mesh(layout_mesh_t* mesh)
     {
         for (size_t j = 0; j < mesh->format.y; j++)
         {
-            // Set up position for all windows
             // Set up flags for drawing
             int flags = SWP_NOACTIVATE;
             switch (mesh->elements[i][j].alignment)
@@ -166,6 +165,7 @@ void redraw_mesh(layout_mesh_t* mesh)
                 break;
             }
 
+            // Set up position for all windows
             // After SetWindowPos call the Windows OS automatically redraw window
             SetWindowPos(mesh->elements[i][j].wnd_desc.hwnd, NULL,
                          mesh->elements[i][j].layout_position.x,

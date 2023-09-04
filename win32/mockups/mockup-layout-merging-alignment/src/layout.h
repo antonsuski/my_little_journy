@@ -68,6 +68,7 @@ typedef struct
     layout_t           layout_type; /*< Type of layout */
     POINT              position;    /*< Position of mesh according user space in main window */
     POINT              size;        /*< Size of mesh */
+    POINT              spacing;     /*< Spacing between windows in mesh*/
     POINT              format;      /*< Format of mesh for HORIZONTAL (n:1) for VERTICAL (1:m) for GRID (n:m)
                                         where n - count of elements in row, m - count of elements in column*/
 } layout_mesh_t;

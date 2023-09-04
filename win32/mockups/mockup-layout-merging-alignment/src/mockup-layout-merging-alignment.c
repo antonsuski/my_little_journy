@@ -49,6 +49,8 @@ int WINAPI wWinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance,
     mesh.position.y  = 0;
     mesh.size.x      = 300;
     mesh.size.y      = 300;
+    mesh.spacing.x   = 3;
+    mesh.spacing.y   = 3;
     create_layout_mesh(&mesh);
     calculate_layout(&mesh);
     add_mesh(&mesh);
@@ -62,6 +64,8 @@ int WINAPI wWinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance,
     child_mesh.position.y = 150;
     child_mesh.size.x = 100;
     child_mesh.size.y = 200;
+    child_mesh.spacing.x   = 3;
+    child_mesh.spacing.y   = 3;
     create_layout_mesh(&child_mesh);
     calculate_layout(&mesh);
 
@@ -69,7 +73,7 @@ int WINAPI wWinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance,
     HWND          button1    = CreateWindow(wbc_name, L"button 1",
                                 WS_CHILD | WS_VISIBLE | BS_DEFPUSHBUTTON, 0, 0,
                                 100, 100, main_window, NULL, hInstance, NULL);
-    add_control_into_mesh(&mesh, button1);
+    add_control_into_mesh(&mesh, button1, 0);
     origin_btn_proc =
         (WNDPROC)SetWindowLongPtr(button1, GWLP_WNDPROC, (LONG_PTR)btn_proc);
 
@@ -83,7 +87,7 @@ int WINAPI wWinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance,
     HWND button3 = CreateWindowEx(WS_EX_TRANSPARENT, L"button", L"button 3",
                                   WS_CHILD | WS_VISIBLE, 0, 200, 100, 100,
                                   main_window, NULL, hInstance, NULL);
-    add_control_into_mesh(&mesh, button3);
+    add_control_into_mesh(&mesh, button3, 0);
     origin_btn_proc =
         (WNDPROC)SetWindowLongPtr(button3, GWLP_WNDPROC, (LONG_PTR)btn_proc);
 
@@ -132,14 +136,14 @@ int WINAPI wWinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance,
     HWND button10 = CreateWindowEx(WS_EX_TRANSPARENT, L"button", L"button 10",
                                   WS_CHILD | WS_VISIBLE, 200, 100, 100, 100,
                                   main_window, NULL, hInstance, NULL);
-    add_control_into_mesh(&child_mesh, button10);
+    add_control_into_mesh(&child_mesh, button10, NO_RESIZE);
     origin_btn_proc =
         (WNDPROC)SetWindowLongPtr(button10, GWLP_WNDPROC, (LONG_PTR)btn_proc);
 
     HWND button11 = CreateWindowEx(WS_EX_TRANSPARENT, L"button", L"button 11",
                                   WS_CHILD | WS_VISIBLE, 200, 200, 100, 100,
                                   main_window, NULL, hInstance, NULL);
-    add_control_into_mesh(&child_mesh, button11);
+    add_control_into_mesh(&child_mesh, button11, NO_RESIZE);
     origin_btn_proc =
         (WNDPROC)SetWindowLongPtr(button11, GWLP_WNDPROC, (LONG_PTR)btn_proc);
 
