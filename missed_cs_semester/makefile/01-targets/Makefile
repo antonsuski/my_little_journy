@@ -17,7 +17,10 @@ tar3:
 # For multiple target for a rule use '$@' it will be runnign for
 # each target
 
-mul_tar: tar4 tar5
+mul_tar: tar5 tar4
 
 tar4 tar5:
 	echo $@
+
+tar4:
+	echo "fourth target"
