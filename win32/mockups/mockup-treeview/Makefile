@@ -10,11 +10,10 @@ all_dirs:=$(dir $(call rwildcard, $(src_dir), */.))
 includes:=$(addprefix -I, $(all_dirs))
 all_cfiles:=$(call rwildcard, $(src_dir),*.c)
 all_cfiles:=$(call rwildcard, $(src_dir),*.h)
-all_ofiles:=$(addsuffix .o, $(basename $(notdir $(call rwildcard, $(src_dir),*.c))))
-
+all_ofiles:=$(addsuffix .o, $(basename $(notdir $(call rwildcard, $(src_dir),*.c)))) resources.o
 link_flags:= -static -lversion -lcomctl32 -lws2_32 -municode -mwindows #-L "C:/Windows/System31"
 # link_flags:= -static
-cmp_flags:= -O2 -m64 -std=c99 -g
+cmp_flags:= -m64 -std=c99 -g
 
 $(app_name): $(all_ofiles)
 	gcc $^ -o $@ $(link_flags)
@@ -23,10 +22,11 @@ $(app_name): $(all_ofiles)
 
 	gcc -c $< -o $@ $(includes) $(cmp_flags)
 #build res
-$(obj_dir)/resources.o: $(res_dir)/resources.rc
-	windres -i $(res_dir)/resources.rc -o resources.o
+resources.o: $(res_dir)/resources.rc
+	windres -v -J rc -i $(res_dir)/resources.rc -o resources.o
 
 build: $(obj_dir)/resources.o $(app_name)
 
 clean:
-	del /Q /F $(app_name) $(all_ofiles)
+	rm *.o
+	rm bin.exe

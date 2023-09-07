@@ -2,6 +2,8 @@
 #include "resources.h"
 
 static int g_nDocument;
+static int g_nClosed;
+static int g_nOpen;
 
 HWND CreateATreeView(HWND hwndParent, HINSTANCE hInst)
 {
@@ -24,12 +26,23 @@ HWND CreateATreeView(HWND hwndParent, HINSTANCE hInst)
     // Initialize the image list, and add items to the control.
     // InitTreeViewImageLists and InitTreeViewItems are application-
     // defined functions, shown later.
-    // if (!InitTreeViewImageLists(hwndTV) || !InitTreeViewItems(hwndTV))
+
+    if (!InitTreeViewImageLists(hwndTV, hInst))
+    {
+        MessageBox(NULL, L"can't init vew image list", L"image", MB_OK);
+    }
+
+    if (!InitTreeViewItems(hwndTV))
+    {
+        MessageBox(NULL, L"can't init vew items", L"items", MB_OK);
+    }
+
+    // if (!InitTreeViewImageLists(hwndTV, hInst) || !InitTreeViewItems(hwndTV))
     // {
     //     DestroyWindow(hwndTV);
     //     return FALSE;
     // }
-    InitTreeViewItems(hwndTV);
+    // InitTreeViewItems(hwndTV);
     return hwndTV;
 }
 
@@ -43,22 +56,32 @@ BOOL InitTreeViewImageLists(HWND hwndTV, HINSTANCE hInst)
                                  0)) == NULL)
         return FALSE;
 
-    // // Add the open file, closed file, and document bitmaps.
-    // hbmp    = LoadBitmap(hInst, MAKEINTRESOURCE(IDB_OPEN_FILE));
-    // g_nOpen = ImageList_Add(himl, hbmp, (HBITMAP)NULL);
+    // Add the open file, closed file, and document bitmaps.
+    hbmp    = LoadBitmapW(hInst, MAKEINTRESOURCE(IDB_BITMAP1));
+    if (hbmp == NULL)
+    {
+        wchar_t error_msg[1024];
+        DWORD error = GetLastError();
+        FormatMessage(FORMAT_MESSAGE_FROM_SYSTEM | FORMAT_MESSAGE_IGNORE_INSERTS, NULL, error, 0, error_msg, sizeof(error_msg)/ sizeof(wchar_t), NULL);
+        MessageBox(NULL, error_msg, L"kekw", MB_ICONERROR);
+    }
+    g_nOpen = ImageList_Add(himl, hbmp, (HBITMAP)NULL);
     // DeleteObject(hbmp);
 
-    // hbmp      = LoadBitmap(hInst, MAKEINTRESOURCE(IDB_CLOSED_FILE));
-    // g_nClosed = ImageList_Add(himl, hbmp, (HBITMAP)NULL);
+    // hbmp      = LoadBitmap(hInst, MAKEINTRESOURCE(IDB_BITMAP));
+    g_nClosed = ImageList_Add(himl, hbmp, (HBITMAP)NULL);
     // DeleteObject(hbmp);
 
-    hbmp        = LoadBitmap(hInst, MAKEINTRESOURCE(IDB_BITMAP1));
+    // hbmp        = LoadBitmap(hInst, MAKEINTRESOURCE(IDB_BITMAP));
     g_nDocument = ImageList_Add(himl, hbmp, (HBITMAP)NULL);
     DeleteObject(hbmp);
 
     // Fail if not all of the images were added.
-    if (ImageList_GetImageCount(himl) < 1)
+    int res_count = ImageList_GetImageCount(himl);
+    if (res_count < NUM_BITMAPS)
+    {
         return FALSE;
+    }
 
     // Associate the image list with the tree-view control.
     TreeView_SetImageList(hwndTV, himl, TVSIL_NORMAL);
@@ -119,8 +142,8 @@ HTREEITEM AddItemToTree(HWND hwndTV, LPTSTR lpszItem, int nLevel)
         hti       = TreeView_GetParent(hwndTV, hPrev);
         tvi.mask  = TVIF_IMAGE | TVIF_SELECTEDIMAGE;
         tvi.hItem = hti;
-        // tvi.iImage = g_nClosed;
-        // tvi.iSelectedImage = g_nClosed;
+        tvi.iImage = g_nClosed;
+        tvi.iSelectedImage = g_nClosed;
         TreeView_SetItem(hwndTV, &tvi);
     }
 
@@ -147,8 +170,8 @@ BOOL InitTreeViewItems(HWND hwndTV)
     for (int i = 0; i < ARRAYSIZE(g_rgDocHeadings); i++)
     {
         // Add the item to the tree-view control.
-        hti = AddItemToTree(hwndTV, g_rgDocHeadings[i].tchHeading,
-                            g_rgDocHeadings[i].tchLevel);
+        hti = AddItemToTree(hwndTV, g_rgDocHeadings[i].tchar_Heading,
+                            g_rgDocHeadings[i].heading_level);
 
         if (hti == NULL)
             return FALSE;
