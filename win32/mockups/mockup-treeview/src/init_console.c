@@ -1,5 +1,7 @@
 #include "init_console.h"
 
+#include <stdio.h>
+
 void init_console()
 {
     if (AttachConsole(ATTACH_PARENT_PROCESS))
@@ -9,4 +11,5 @@ void init_console()
         freopen_s(&fpstdout, "CONOUT$", "w", stdout);
         freopen_s(&fpstderr, "CONOUT$", "w", stderr);
     }
+    printf("Hello, world!\n");
 }

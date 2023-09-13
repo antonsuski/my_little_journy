@@ -3,6 +3,7 @@
 #endif
 
 #include "init_console.h"
+#include "file_system_wrapper.h"
 #include "treeview.h"
 
 #include <Windows.h>
@@ -13,7 +14,6 @@ LRESULT CALLBACK WindowProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam);
 int WINAPI wWinMain(HINSTANCE h_instance, HINSTANCE h_prev_instance,
                     PWSTR p_cmd_line, int n_cmd_show)
 {
-    init_console();
     // Register the window class.
     const wchar_t CLASS_NAME[] = L"Sample Window Class";
 
@@ -33,7 +33,7 @@ int WINAPI wWinMain(HINSTANCE h_instance, HINSTANCE h_prev_instance,
                                WS_OVERLAPPEDWINDOW,         // Window style
 
                                // Size and position
-                               CW_USEDEFAULT, CW_USEDEFAULT, CW_USEDEFAULT,
+                               300, 300, CW_USEDEFAULT,
                                CW_USEDEFAULT,
 
                                NULL,       // Parent window
@@ -50,6 +50,8 @@ int WINAPI wWinMain(HINSTANCE h_instance, HINSTANCE h_prev_instance,
     }
 
     ShowWindow(hwnd, n_cmd_show);
+    init_console();
+    get_directory_content("<path_to_dir>");
 
     // Run the message loop.
 
@@ -84,8 +86,8 @@ LRESULT CALLBACK WindowProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
             FillRect(hdc, &ps.rcPaint, (HBRUSH)(COLOR_WINDOW + 1));
 
             EndPaint(hwnd, &ps);
-        }
             return 0;
+        }
     }
     return DefWindowProc(hwnd, uMsg, wParam, lParam);
 }

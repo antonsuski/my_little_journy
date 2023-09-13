@@ -11,8 +11,8 @@
 #include <CommCtrl.h>
 #include <winuser.h>
 
-#define CX_BITMAP 10
-#define CY_BITMAP 10
+#define CX_BITMAP 24
+#define CY_BITMAP 24
 #define NUM_BITMAPS 3
 #define MAX_HEADING_LEN 256
 
