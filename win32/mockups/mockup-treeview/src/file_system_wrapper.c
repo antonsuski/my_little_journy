@@ -1,28 +1,28 @@
 #include "file_system_wrapper.h"
 
+#include <Windows.h>
 #include <stdio.h>
+#include <stdlib.h>
 #include <string.h>
 #include <tchar.h>
-#include <windows.h>
 
 #define MAX_PATH_SIZE 1024
 #define PATH_TO_EXAMPLES "D:\\vm_shared_folder\\er-dock\\logs\\*\0"
 
-char** get_directory_content(const char* path_to_directory)
+bool get_directory_content(char** contents_buffer, size_t* buffer_size,
+                           const char* path_to_directory)
 {
-    printf("%s, args: %s\n", __func__, path_to_directory);
-
-    DWORD           result;
-    TCHAR           buffer[MAX_PATH_SIZE];
     HANDLE          file;
     WIN32_FIND_DATA finded_data;
     LARGE_INTEGER   file_size;
+    char            path[MAX_PATH] = { 0 };
 
-    result = GetCurrentDirectory(MAX_PATH_SIZE, buffer);
-    strcat(buffer, TEXT("\\*"));
-    printf("current dir:%s\n", buffer);
+    strcpy(path, path_to_directory);
+    strcat(path, "\\*");
 
-    file = FindFirstFile(PATH_TO_EXAMPLES, &finded_data);
+    // Count all files in directory
+    file = FindFirstFile(path, &finded_data);
+
     if (file == INVALID_HANDLE_VALUE)
     {
         printf("can't find first file");
@@ -30,21 +30,59 @@ char** get_directory_content(const char* path_to_directory)
 
     do
     {
-        if (finded_data.dwFileAttributes & FILE_ATTRIBUTE_DIRECTORY)
+        if (!(finded_data.dwFileAttributes & FILE_ATTRIBUTE_DIRECTORY))
         {
-            _tprintf(TEXT(" %s <DIR>\n"), finded_data.cFileName);
+            (*buffer_size)++;
         }
-        else
-        {
-
-            file_size.LowPart  = finded_data.nFileSizeLow;
-            file_size.HighPart = finded_data.nFileSizeHigh;
-            _tprintf(TEXT(" %s   %ld bytes\n"), finded_data.cFileName,
-                     file_size.QuadPart);
-        }
-
     } while (FindNextFile(file, &finded_data) != 0);
 
     FindClose(&finded_data);
-    return NULL;
+
+    // Allocate memory for directrory content list
+    contents_buffer = (char**)malloc((*buffer_size) * sizeof(char*));
+
+    if (!contents_buffer)
+    {
+        printf("Can't allocate memory for char**");
+        return false;
+    }
+
+    for (size_t i = 0; i < *buffer_size; i++)
+    {
+        contents_buffer[i] = (char*)malloc(sizeof(char[MAX_PATH_SIZE]));
+        if (!contents_buffer[i])
+        {
+            printf("Can't allocate memory for char*");
+            return false;
+        }
+    }
+
+    // Write contetn
+    file = FindFirstFile(PATH_TO_EXAMPLES, &finded_data);
+
+    if (file == INVALID_HANDLE_VALUE)
+    {
+        printf("can't find first file");
+    }
+
+    do
+    {
+        if (!(finded_data.dwFileAttributes & FILE_ATTRIBUTE_DIRECTORY))
+        {
+            for (size_t i = 0; i < *buffer_size; i++)
+            {
+                strncpy(contents_buffer[i], finded_data.cFileName,
+                        MAX_PATH_SIZE);
+            }
+        }
+    } while (FindNextFile(file, &finded_data) != 0);
+
+    FindClose(&finded_data);
+
+    for (size_t i = 0; i < *buffer_size; i++)
+    {
+        printf("[%d]: %s\n", i, contents_buffer[i]);
+    }
+
+    return true;
 }

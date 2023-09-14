@@ -2,8 +2,8 @@
 #define UNICODE
 #endif
 
-#include "init_console.h"
 #include "file_system_wrapper.h"
+#include "init_console.h"
 #include "treeview.h"
 
 #include <Windows.h>
@@ -33,8 +33,7 @@ int WINAPI wWinMain(HINSTANCE h_instance, HINSTANCE h_prev_instance,
                                WS_OVERLAPPEDWINDOW,         // Window style
 
                                // Size and position
-                               300, 300, CW_USEDEFAULT,
-                               CW_USEDEFAULT,
+                               300, 300, CW_USEDEFAULT, CW_USEDEFAULT,
 
                                NULL,       // Parent window
                                NULL,       // Menu
@@ -51,10 +50,19 @@ int WINAPI wWinMain(HINSTANCE h_instance, HINSTANCE h_prev_instance,
 
     ShowWindow(hwnd, n_cmd_show);
     init_console();
-    get_directory_content("<path_to_dir>");
+    char** tmp_str      = NULL;
+    size_t tmp_str_size = 0;
+    if (!get_directory_content(tmp_str, &tmp_str_size, PATH_TO_EXAMPLES_CLEAR))
+    {
+        return 1;
+    }
+
+    // for (size_t i = 0; i < tmp_str_size; i++)
+    // {
+    //     printf("[%d]: %s\n", i, tmp_str[i]);
+    // }
 
     // Run the message loop.
-
     MSG msg = {};
     while (GetMessage(&msg, NULL, 0, 0) > 0)
     {

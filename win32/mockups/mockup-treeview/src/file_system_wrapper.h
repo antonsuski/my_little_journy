@@ -10,5 +10,11 @@
 #ifndef FILE_SYSTEM_WRAPPER_H
 #define FILE_SYSTEM_WRAPPER_H
 
-char** get_directory_content(const char* path_to_directory);
+#include <stdbool.h>
+#include <stddef.h>
+
+#define PATH_TO_EXAMPLES_CLEAR "D:\\vm_shared_folder\\er-dock\\logs"
+
+bool get_directory_content(char** contents_buffer, size_t* buffer_size,
+                           const char* path_to_directory);
 #endif // FILE_SYSTEM_WRAPPER_H
