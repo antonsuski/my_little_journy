@@ -7,12 +7,15 @@
 #define UNICODE
 #endif
 
+#include "file_system_wrapper.h"
+
 #include <Windows.h>
-#include <CommCtrl.h>
 #include <winuser.h>
 
-#define CX_BITMAP 24
-#define CY_BITMAP 24
+#include <CommCtrl.h>
+
+#define CX_BITMAP 15
+#define CY_BITMAP 15
 #define NUM_BITMAPS 3
 #define MAX_HEADING_LEN 256
 
@@ -20,9 +23,7 @@ typedef struct
 {
     TCHAR tchar_Heading[MAX_HEADING_LEN];
     int   heading_level;
-} Heading;
-
-static Heading g_rgDocHeadings[3] = {{'A', 1},{'B', 2},{'C', 2}};
+} heading_t;
 
 HWND CreateATreeView(HWND hwndParent, HINSTANCE hInst);
 

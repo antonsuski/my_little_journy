@@ -1,9 +1,13 @@
-#include "treeview.h"
 #include "resources.h"
+#include "treeview.h"
 
-static int g_nDocument;
-static int g_nClosed;
-static int g_nOpen;
+#include <stdio.h>
+
+static int        g_document;
+static int        g_closed;
+static int        g_open;
+static int        g_headings_count;
+static heading_t* g_headings;
 
 HWND CreateATreeView(HWND hwndParent, HINSTANCE hInst)
 {
@@ -57,23 +61,25 @@ BOOL InitTreeViewImageLists(HWND hwndTV, HINSTANCE hInst)
         return FALSE;
 
     // Add the open file, closed file, and document bitmaps.
-    hbmp    = LoadBitmapW(hInst, MAKEINTRESOURCE(IDB_BITMAP1));
+    hbmp = LoadBitmapW(hInst, MAKEINTRESOURCE(IDB_BITMAP1));
     if (hbmp == NULL)
     {
         wchar_t error_msg[1024];
-        DWORD error = GetLastError();
-        FormatMessage(FORMAT_MESSAGE_FROM_SYSTEM | FORMAT_MESSAGE_IGNORE_INSERTS, NULL, error, 0, error_msg, sizeof(error_msg)/ sizeof(wchar_t), NULL);
+        DWORD   error = GetLastError();
+        FormatMessage(
+            FORMAT_MESSAGE_FROM_SYSTEM | FORMAT_MESSAGE_IGNORE_INSERTS, NULL,
+            error, 0, error_msg, sizeof(error_msg) / sizeof(wchar_t), NULL);
         MessageBox(NULL, error_msg, L"kekw", MB_ICONERROR);
     }
-    g_nOpen = ImageList_Add(himl, hbmp, (HBITMAP)NULL);
+    g_open = ImageList_Add(himl, hbmp, (HBITMAP)NULL);
     // DeleteObject(hbmp);
 
     // hbmp      = LoadBitmap(hInst, MAKEINTRESOURCE(IDB_BITMAP));
-    g_nClosed = ImageList_Add(himl, hbmp, (HBITMAP)NULL);
+    g_closed = ImageList_Add(himl, hbmp, (HBITMAP)NULL);
     // DeleteObject(hbmp);
 
     // hbmp        = LoadBitmap(hInst, MAKEINTRESOURCE(IDB_BITMAP));
-    g_nDocument = ImageList_Add(himl, hbmp, (HBITMAP)NULL);
+    g_document = ImageList_Add(himl, hbmp, (HBITMAP)NULL);
     DeleteObject(hbmp);
 
     // Fail if not all of the images were added.
@@ -106,8 +112,8 @@ HTREEITEM AddItemToTree(HWND hwndTV, LPTSTR lpszItem, int nLevel)
 
     // Assume the item is not a parent item, so give it a
     // document image.
-    tvi.iImage = g_nDocument;
-    tvi.iSelectedImage = g_nDocument;
+    tvi.iImage         = g_document;
+    tvi.iSelectedImage = g_document;
 
     // Save the heading level in the item's application-defined
     // data area.
@@ -139,11 +145,11 @@ HTREEITEM AddItemToTree(HWND hwndTV, LPTSTR lpszItem, int nLevel)
     // closed folder bitmap to indicate it now has child items.
     if (nLevel > 1)
     {
-        hti       = TreeView_GetParent(hwndTV, hPrev);
-        tvi.mask  = TVIF_IMAGE | TVIF_SELECTEDIMAGE;
-        tvi.hItem = hti;
-        tvi.iImage = g_nClosed;
-        tvi.iSelectedImage = g_nClosed;
+        hti                = TreeView_GetParent(hwndTV, hPrev);
+        tvi.mask           = TVIF_IMAGE | TVIF_SELECTEDIMAGE;
+        tvi.hItem          = hti;
+        tvi.iImage         = g_closed;
+        tvi.iSelectedImage = g_closed;
         TreeView_SetItem(hwndTV, &tvi);
     }
 
@@ -160,6 +166,33 @@ BOOL InitTreeViewItems(HWND hwndTV)
 {
     HTREEITEM hti;
 
+    char** tmp_str      = NULL;
+    size_t tmp_str_size = 0;
+    if (!(tmp_str = get_directory_content(
+              &tmp_str_size, "D:\\vm_shared_folder\\er-dock\\logs")))
+    {
+        return 1;
+    }
+
+    g_headings = (heading_t*)malloc(tmp_str_size * sizeof(heading_t));
+
+    for (size_t i = 0; i < tmp_str_size; i++)
+    {
+        size_t converted_chars = 0;
+        mbstowcs(g_headings[i].tchar_Heading, tmp_str[i], MAX_HEADING_LEN);
+        g_headings[i].heading_level = 1;
+        printf("[%d]: %s\n", i, tmp_str[i]);
+    }
+
+    if (tmp_str)
+    {
+        for (size_t i = 0; i < tmp_str_size; i++)
+        {
+            free(tmp_str[i]);
+        }
+        free(tmp_str);
+    }
+
     // g_rgDocHeadings is an application-defined global array of
     // the following structures:
     //     typedef struct
@@ -167,11 +200,11 @@ BOOL InitTreeViewItems(HWND hwndTV)
     //         TCHAR tchHeading[MAX_HEADING_LEN];
     //         int tchLevel;
     //     } Heading;
-    for (int i = 0; i < ARRAYSIZE(g_rgDocHeadings); i++)
+    for (int i = 0; i < tmp_str_size; i++)
     {
         // Add the item to the tree-view control.
-        hti = AddItemToTree(hwndTV, g_rgDocHeadings[i].tchar_Heading,
-                            g_rgDocHeadings[i].heading_level);
+        hti = AddItemToTree(hwndTV, g_headings[i].tchar_Heading,
+                            g_headings[i].heading_level);
 
         if (hti == NULL)
             return FALSE;

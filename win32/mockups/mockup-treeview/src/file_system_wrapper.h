@@ -1,20 +1,25 @@
 /**
  * @file file_system_wrapper.h
- * @project EasyRail Dock
- * @author Anton Syski (Anton.SUSKIY.ext@hitachirail.com)
- * @brief This is file define small wrapper for Win32 API file system
- * @date 2023-09-12
+ * @author your name (you@domain.com)
+ * @brief
+ * @date 2023-09-15
  */
 
 // Header guard
 #ifndef FILE_SYSTEM_WRAPPER_H
 #define FILE_SYSTEM_WRAPPER_H
 
-#include <stdbool.h>
 #include <stddef.h>
 
-#define PATH_TO_EXAMPLES_CLEAR "D:\\vm_shared_folder\\er-dock\\logs"
+/**
+ * @brief Get the directory content string list.
+ *
+ * @param[in, out] buffer_size Return number of strings.
+ * @param[in] path_to_directory Path to target directory.
+ * @return char** Returns NULL if function is faild, returns pointer to strings
+ * array if not.
+ */
+char** get_directory_content(size_t*     buffer_size,
+                             const char* path_to_directory);
 
-bool get_directory_content(char** contents_buffer, size_t* buffer_size,
-                           const char* path_to_directory);
 #endif // FILE_SYSTEM_WRAPPER_H

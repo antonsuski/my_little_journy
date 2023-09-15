@@ -23,7 +23,7 @@ $(app_name): $(all_ofiles)
 	gcc -c $< -o $@ $(includes) $(cmp_flags)
 #build res
 resources.o: $(res_dir)/resources.rc
-	windres -v -J rc -i $(res_dir)/resources.rc -o resources.o
+	windres -i $(res_dir)/resources.rc -o resources.o
 
 build: $(obj_dir)/resources.o $(app_name)
 

@@ -9,6 +9,8 @@
 #include <Windows.h>
 #include <stdio.h>
 
+// #define PATH_TO_EXAMPLES_CLEAR "D:\\vm_shared_folder\\er-dock\\logs"
+
 LRESULT CALLBACK WindowProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam);
 
 int WINAPI wWinMain(HINSTANCE h_instance, HINSTANCE h_prev_instance,
@@ -41,6 +43,7 @@ int WINAPI wWinMain(HINSTANCE h_instance, HINSTANCE h_prev_instance,
                                NULL        // Additional application data
     );
 
+    init_console();
     CreateATreeView(hwnd, h_instance);
 
     if (hwnd == NULL)
@@ -49,17 +52,26 @@ int WINAPI wWinMain(HINSTANCE h_instance, HINSTANCE h_prev_instance,
     }
 
     ShowWindow(hwnd, n_cmd_show);
-    init_console();
-    char** tmp_str      = NULL;
-    size_t tmp_str_size = 0;
-    if (!get_directory_content(tmp_str, &tmp_str_size, PATH_TO_EXAMPLES_CLEAR))
-    {
-        return 1;
-    }
+    // char** tmp_str      = NULL;
+    // size_t tmp_str_size = 0;
+    // if (!(tmp_str =
+    //           get_directory_content(&tmp_str_size, PATH_TO_EXAMPLES_CLEAR)))
+    // {
+    //     return 1;
+    // }
 
     // for (size_t i = 0; i < tmp_str_size; i++)
     // {
     //     printf("[%d]: %s\n", i, tmp_str[i]);
+    // }
+
+    // if (tmp_str)
+    // {
+    //     for (size_t i = 0; i < tmp_str_size; i++)
+    //     {
+    //         free(tmp_str[i]);
+    //     }
+    //     free(tmp_str);
     // }
 
     // Run the message loop.
