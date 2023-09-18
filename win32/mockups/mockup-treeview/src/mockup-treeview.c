@@ -44,35 +44,61 @@ int WINAPI wWinMain(HINSTANCE h_instance, HINSTANCE h_prev_instance,
     );
 
     init_console();
-    CreateATreeView(hwnd, h_instance);
+    HWND tree_view = create_treeview_list(hwnd, h_instance, 0, 0, 300, 300);
 
     if (hwnd == NULL)
     {
         return 0;
     }
 
+    HTREEITEM hti;
+
+    char** tmp_str      = NULL;
+    size_t tmp_str_size = 0;
+    if (!(tmp_str = get_directory_content(
+              &tmp_str_size, "D:\\vm_shared_folder\\er-dock\\logs")))
+    {
+        return 1;
+    }
+
+    heading_t* headings = (heading_t*)malloc(tmp_str_size * sizeof(heading_t));
+
+    for (size_t i = 0; i < tmp_str_size; i++)
+    {
+        mbstowcs(headings[i].tchar_heading, tmp_str[i], MAX_HEADING_LEN);
+        if (i % 2 == 0)
+        {
+            headings[i].heading_level = 1;
+        }
+        else
+        {
+            headings[i].heading_level = 2;
+        }
+
+        printf("[%zu]: %s\n", i, tmp_str[i]);
+    }
+
+    if (tmp_str)
+    {
+        for (size_t i = 0; i < tmp_str_size; i++)
+        {
+            free(tmp_str[i]);
+        }
+        free(tmp_str);
+    }
+
+    for (int i = 0; i < tmp_str_size; i++)
+    {
+        // Add the item to the tree-view control.
+        hti = add_item_to_treeview(tree_view, &headings[i]);
+
+        if (hti == NULL)
+        {
+            return 1;
+        }
+    }
+
     ShowWindow(hwnd, n_cmd_show);
-    // char** tmp_str      = NULL;
-    // size_t tmp_str_size = 0;
-    // if (!(tmp_str =
-    //           get_directory_content(&tmp_str_size, PATH_TO_EXAMPLES_CLEAR)))
-    // {
-    //     return 1;
-    // }
-
-    // for (size_t i = 0; i < tmp_str_size; i++)
-    // {
-    //     printf("[%d]: %s\n", i, tmp_str[i]);
-    // }
-
-    // if (tmp_str)
-    // {
-    //     for (size_t i = 0; i < tmp_str_size; i++)
-    //     {
-    //         free(tmp_str[i]);
-    //     }
-    //     free(tmp_str);
-    // }
 
     // Run the message loop.
     MSG msg = {};
@@ -82,8 +108,7 @@ int WINAPI wWinMain(HINSTANCE h_instance, HINSTANCE h_prev_instance,
         DispatchMessage(&msg);
     }
 
-    return 0;
-
+    free(headings);
     FreeConsole();
     return 0;
 }

@@ -16,8 +16,9 @@
  *
  * @param[in, out] buffer_size Return number of strings.
  * @param[in] path_to_directory Path to target directory.
- * @return char** Returns NULL if function is faild, returns pointer to strings
- * array if not.
+ * @return char** Returns NULL if function is faild else returns pointer to
+ * allocated strings array. Be sure to free memory after using obtained
+ * data;
  */
 char** get_directory_content(size_t*     buffer_size,
                              const char* path_to_directory);

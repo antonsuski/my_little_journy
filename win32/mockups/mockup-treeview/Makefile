@@ -13,7 +13,7 @@ all_cfiles:=$(call rwildcard, $(src_dir),*.h)
 all_ofiles:=$(addsuffix .o, $(basename $(notdir $(call rwildcard, $(src_dir),*.c)))) resources.o
 link_flags:= -static -lversion -lcomctl32 -lws2_32 -municode -mwindows #-L "C:/Windows/System31"
 # link_flags:= -static
-cmp_flags:= -m64 -std=c99 -g
+cmp_flags:= -m64 -std=c99 -g -Wall -Werror
 
 $(app_name): $(all_ofiles)
 	gcc $^ -o $@ $(link_flags)

@@ -9,7 +9,6 @@ char** get_directory_content(size_t* buffer_size, const char* path_to_directory)
 {
     HANDLE          file;
     WIN32_FIND_DATA finded_data;
-    LARGE_INTEGER   file_size;
     char            path[MAX_PATH] = { 0 };
     char**          contents_buffer;
 
@@ -32,7 +31,7 @@ char** get_directory_content(size_t* buffer_size, const char* path_to_directory)
         }
     } while (FindNextFile(file, &finded_data) != 0);
 
-    // FindClose(&finded_data);
+    FindClose(&finded_data);
 
     // Allocate memory for directrory content list
     contents_buffer = (char**)malloc((*buffer_size) * sizeof(char*));
@@ -73,7 +72,7 @@ char** get_directory_content(size_t* buffer_size, const char* path_to_directory)
         }
     } while (FindNextFile(file, &finded_data) != 0);
 
-    // FindClose(&finded_data);
+    FindClose(&finded_data);
 
     return contents_buffer;
 }
