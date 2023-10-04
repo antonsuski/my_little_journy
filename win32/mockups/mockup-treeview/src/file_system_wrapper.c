@@ -4,6 +4,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+#include <tchar.h>
 
 char** get_directory_content(size_t* buffer_size, const char* path_to_directory)
 {
@@ -11,12 +12,14 @@ char** get_directory_content(size_t* buffer_size, const char* path_to_directory)
     WIN32_FIND_DATA finded_data;
     char            path[MAX_PATH] = { 0 };
     char**          contents_buffer;
+    WCHAR search_path[MAX_PATH];
 
     strcpy(path, path_to_directory);
-    strcat(path, "\\*");
+    strcat(path, "\\*.csv");
+    MultiByteToWideChar(CP_UTF8, 0, path, MAX_PATH, search_path, MAX_PATH);
 
     // Count all files in directory
-    file = FindFirstFile(path, &finded_data);
+    file = FindFirstFileEx(search_path, FindExInfoStandard, &finded_data, FindExSearchNameMatch, NULL, 0);
 
     if (file == INVALID_HANDLE_VALUE)
     {
@@ -61,14 +64,13 @@ char** get_directory_content(size_t* buffer_size, const char* path_to_directory)
         printf("can't find first file");
     }
 
+    size_t i = 0;
     do
     {
         if (!(finded_data.dwFileAttributes & FILE_ATTRIBUTE_DIRECTORY))
         {
-            for (size_t i = 0; i < *buffer_size; i++)
-            {
-                strncpy(contents_buffer[i], finded_data.cFileName, MAX_PATH);
-            }
+            strncpy(contents_buffer[i++], finded_data.cFileName, MAX_PATH);
+            printf("rofl:%s\n", contents_buffer[i - 1]);
         }
     } while (FindNextFile(file, &finded_data) != 0);
 

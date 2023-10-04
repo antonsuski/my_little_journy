@@ -9,7 +9,8 @@
 #include <Windows.h>
 #include <stdio.h>
 
-// #define PATH_TO_EXAMPLES_CLEAR "D:\\vm_shared_folder\\er-dock\\logs"
+#define PATH_TO_EXAMPLES_CLEAR "D:\\vm_shared_folder\\er-dock\\logs"
+#define PATH_TO_LOG_DIRECTORIES "C:\\Users\\Public\\Documents"
 
 LRESULT CALLBACK WindowProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam);
 
@@ -55,8 +56,7 @@ int WINAPI wWinMain(HINSTANCE h_instance, HINSTANCE h_prev_instance,
 
     char** tmp_str      = NULL;
     size_t tmp_str_size = 0;
-    if (!(tmp_str = get_directory_content(
-              &tmp_str_size, "D:\\vm_shared_folder\\er-dock\\logs")))
+    if (!(tmp_str = get_directory_content( &tmp_str_size, PATH_TO_LOG_DIRECTORIES)))
     {
         return 1;
     }
