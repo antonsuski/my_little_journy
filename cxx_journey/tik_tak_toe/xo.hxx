@@ -15,6 +15,8 @@ enum class command
     set,
     start,
     end,
+    exit,
+    quit,
     unknown
 };
 

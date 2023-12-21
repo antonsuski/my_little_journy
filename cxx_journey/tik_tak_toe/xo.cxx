@@ -9,7 +9,9 @@
 
 static std::map<command, std::string> command_map{ { command::set, "set" },
                                                    { command::start, "start" },
-                                                   { command::end, "end" } };
+                                                   { command::end, "end" },
+                                                   { command::exit, "exit" },
+                                                   { command::quit, "quit" } };
 
 static std::map<element, std::string> element_map{
     { element::cross, "x" },
@@ -127,50 +129,5 @@ void view::render_field(field& f)
 
 void game::run()
 {
-    bool    running{ true };
-    command c{ command::unknown };
-
-    // clang-format off
-    std::cout << "Welcome to tic-tak-toe Version 1.0" << std::endl;
-    std::cout << "For start type \"start\"\nFor set x or o type \"set\"\nFor "
-                 "end game type \"end\"\n"
-              << "Good luck, and have fun!" << std::endl;
-    // clang-format on
-
-    while (running)
-    {
-        std::cout << ">";
-        std::cin >> c;
-
-        switch (c)
-        {
-            case command::start:
-            {
-                std::cout << "start\n";
-            }
-            break;
-            case command::end:
-            {
-                std::cout << "end\n";
-                running = false;
-            }
-            break;
-            case command::set:
-            {
-                uint16_t pos_x, pos_y;
-                element  e{ element::none };
-
-                std::cout << "set\n";
-                std::cout << "Enter position x: >";
-                std::cin >> pos_x;
-                std::cout << "Enter position y: >";
-                std::cin >> pos_y;
-                std::cout << "Enter x or o: >";
-                std::cin >> e;
-
-                game_board.set_element(e, pos_x, pos_y);
-            }
-            break;
-        }
-    }
+    std::cout << "game is started" << std::endl;
 }

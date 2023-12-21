@@ -16,6 +16,8 @@ int main(int, char**)
     game_board.set_element(element::cross, 0, 0);
     surface.render_field(game_board);
     app.run();
+    std::cin >> c;
+    std::cout << c;
 
     return 0;
 }
