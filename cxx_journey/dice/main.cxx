@@ -11,16 +11,14 @@ namespace{
 	{
 		return;
 	}
-	
-	void get_user_input(void)
-	{
-		return;
-	}
 };
+
+using ui = unsigned int;
 
 int main(int argc, char** argv)
 {
 	std::cout << "Hello, world!" << std::endl;
+	ui roll_range { 6u };
 	return 0;
 }
 
