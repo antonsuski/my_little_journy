@@ -12,7 +12,7 @@ void ignore_line(void)
     std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
 }
 
-void handle_cin_stream(void)
+void handle_cin_extraction(void)
 {
     if (!std::cin)
     {
@@ -50,7 +50,7 @@ inline int get_input()
 {
     int res{ 0 };
     std::cin >> res;
-    handle_cin_stream();
+    handle_cin_extraction();
     return res;
 }
 } // namespace prng
