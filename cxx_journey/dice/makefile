@@ -1,3 +1,3 @@
+BUILD_DIR=build
 dice: main.cxx
-	clang++ main.cxx -o dice
-	mv dice ~/repos/my_little_journy/cxx_journey/dice/build
+	clang++ main.cxx -o $(BUILD_DIR)/dice
