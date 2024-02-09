@@ -1,18 +1,65 @@
 #include <chrono>
 #include <iostream>
 #include <limits>
+#include <map>
 #include <random>
+#include <string>
+#include <string_view>
+#include <vector>
 
-namespace prng
+namespace handle
 {
-namespace
+namespace options
 {
+struct option
+{
+    enum type
+    {
+        limit,
+        statistics,
+        none
+    };
+
+    // std::string value;
+    type kind;
+};
+
+std::vector<option::type> args{};
+
+bool parse(int argc, char** argv)
+{
+    if (argc > 2)
+    {
+        std::cout << "Too many argumets\n"
+                  << "Usage: dice\n"
+                  << "Usage: dice -l [min_limit] [max_limit]" << std::endl;
+    }
+    const std::vector<std::string_view> buffer(argv + 1, argv + argc);
+
+    if (buffer.empty())
+    {
+        return false;
+    }
+
+    for (const auto& arg : buffer)
+    {
+        if (arg == "-l" || arg == "-limit")
+        {
+            args.push_back({ option::type::limit });
+        }
+    }
+
+    return true;
+}
+
+} // namespace options
+
 void ignore_line(void)
 {
     std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
 }
 
-void handle_cin_extraction(void)
+void cin_extraction(void)
 {
     if (!std::cin)
     {
@@ -25,8 +72,10 @@ void handle_cin_extraction(void)
 
     ignore_line();
 }
-} // namespace
+} // namespace handle
 
+namespace prng
+{
 inline std::mt19937 init_prng(void)
 {
     std::random_device rd{};
@@ -50,7 +99,7 @@ inline int get_input()
 {
     int res{ 0 };
     std::cin >> res;
-    handle_cin_extraction();
+    handle::cin_extraction();
     return res;
 }
 } // namespace prng
@@ -60,6 +109,9 @@ using i  = int;
 
 int main(int argc, char** argv)
 {
-    std::cout << prng::get_range(0u, 6u) << std::endl;
+    int min = { 0 };
+    int max = { 6 };
+
+    std::cout << prng::get_range(min, max) << std::endl;
     return 0;
 }
