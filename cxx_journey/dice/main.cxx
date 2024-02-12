@@ -43,36 +43,33 @@ std::vector<std::string_view> get_option(const std::string_view& option_name)
     auto it = std::find_if(args.begin(), args.end(),
                            [&option_name](std::string_view arg) {
                                return option_name == arg ||
-                                      option_name.substr(1, 2) == arg;
+                                      option_name == arg.substr(1, 2);
                            });
     if (it != args.end())
     {
         std::vector<std::string_view> buffer{};
         if (*it == "-l" || *it == "--limit")
         {
-            for (size_t i{ 0 }; i < 3; i++)
+            for (size_t i{ 0 }; i < 2; i++)
             {
-                buffer.push_back(*it);
                 if ((++it) == args.end())
                 {
                     std::cout << "Wrong usage."
                               << "Usage: dice -l [min] [max]\n"
                               << "Usage: dice --lilmit [min] [max]"
                               << std::endl;
+                    return buffer;
                 }
+                buffer.push_back(*it);
             }
         }
         if (*it == "-r" || *it == "--recursive")
         {
-            for (size_t i{ 0 }; i < 2; i++)
+            if ((++it) == args.end())
             {
-                if ((++it) == args.end())
-                {
-                    std::cout << "Wrong usage."
-                              << "Usage: dice -r [number]\n"
-                              << "Usage: dice --recursive [number]"
-                              << std::endl;
-                }
+                std::cout << "Wrong usage."
+                          << "Usage: dice -r [number]\n"
+                          << "Usage: dice --recursive [number]" << std::endl;
             }
         }
         if (*it == "-h" || *it == "--help")
@@ -154,6 +151,11 @@ int main(int argc, char** argv)
         for (auto arg : handle::options::args)
         {
             std::cout << arg << std::endl;
+            std::vector<std::string_view> help(
+                handle::options::get_option("-h"));
+
+            for (auto i : help)
+                std::cout << i << std::endl;
         }
     }
     std::cout << prng::get_range(min, max) << std::endl;
