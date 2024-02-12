@@ -1,3 +1,4 @@
+#include <algorithm>
 #include <chrono>
 #include <iostream>
 #include <limits>
@@ -11,29 +12,21 @@ namespace handle
 {
 namespace options
 {
-struct option
-{
-    enum type
-    {
-        limit,
-        statistics,
-        none
-    };
-
-    // std::string value;
-    type kind;
-};
-
-std::vector<option::type> args{};
+std::vector<std::string_view> args{};
 
 bool parse(int argc, char** argv)
 {
-    if (argc > 2)
+    // [explicit_first_arg]
+    // --limit [min] [max]
+    // --statistis
+    // --recursive [number]
+    if (argc > 8)
     {
         std::cout << "Too many argumets\n"
                   << "Usage: dice\n"
-                  << "Usage: dice -l [min_limit] [max_limit]" << std::endl;
+                  << "Usage: dice -l [min] [max]" << std::endl;
     }
+
     const std::vector<std::string_view> buffer(argv + 1, argv + argc);
 
     if (buffer.empty())
@@ -41,17 +34,60 @@ bool parse(int argc, char** argv)
         return false;
     }
 
-    for (const auto& arg : buffer)
-    {
-        if (arg == "-l" || arg == "-limit")
-        {
-            args.push_back({ option::type::limit });
-        }
-    }
-
+    args = buffer;
     return true;
 }
 
+std::vector<std::string_view> get_option(const std::string_view& option_name)
+{
+    auto it = std::find_if(args.begin(), args.end(),
+                           [&option_name](std::string_view arg) {
+                               return option_name == arg ||
+                                      option_name.substr(1, 2) == arg;
+                           });
+    if (it != args.end())
+    {
+        std::vector<std::string_view> buffer{};
+        if (*it == "-l" || *it == "--limit")
+        {
+            for (size_t i{ 0 }; i < 3; i++)
+            {
+                buffer.push_back(*it);
+                if ((++it) == args.end())
+                {
+                    std::cout << "Wrong usage."
+                              << "Usage: dice -l [min] [max]\n"
+                              << "Usage: dice --lilmit [min] [max]"
+                              << std::endl;
+                }
+            }
+        }
+        if (*it == "-r" || *it == "--recursive")
+        {
+            for (size_t i{ 0 }; i < 2; i++)
+            {
+                if ((++it) == args.end())
+                {
+                    std::cout << "Wrong usage."
+                              << "Usage: dice -r [number]\n"
+                              << "Usage: dice --recursive [number]"
+                              << std::endl;
+                }
+            }
+        }
+        if (*it == "-h" || *it == "--help")
+        {
+            buffer.push_back(*it);
+        }
+        if (*it == "-s" || *it == "--statistics")
+        {
+            buffer.push_back(*it);
+        }
+        return buffer;
+    }
+
+    return { { "none" } };
+}
 } // namespace options
 
 void ignore_line(void)
@@ -111,7 +147,15 @@ int main(int argc, char** argv)
 {
     int min = { 0 };
     int max = { 6 };
+    if (handle::options::parse(argc, argv))
+    {
+        std::cout << "There are some argumets\n";
 
+        for (auto arg : handle::options::args)
+        {
+            std::cout << arg << std::endl;
+        }
+    }
     std::cout << prng::get_range(min, max) << std::endl;
     return 0;
 }
