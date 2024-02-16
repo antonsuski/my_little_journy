@@ -1,6 +1,6 @@
-# Constatns variables
+# Constants variables
 
-Constans are very usefule in case where we have to preseve values e.g. gravity or pi.
+Constants are very usefull in case where we have to preseve values e.g. gravity or pi.
 Thre are a two already known constatns:
 - Literal Constatn
 - Named Constatn
