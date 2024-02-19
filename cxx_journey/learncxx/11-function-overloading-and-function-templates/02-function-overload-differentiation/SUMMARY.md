@@ -9,3 +9,5 @@ Funcion will be overladed if:
 > [!warning]
 > There is no enough to different return type.
 
+> [!note]
+> `const`, `vvolatile` and `ref-qualifiers` are also considered as different type of function differetiation.
