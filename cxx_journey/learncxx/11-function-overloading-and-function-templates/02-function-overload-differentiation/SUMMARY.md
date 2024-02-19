@@ -1,5 +1,7 @@
 # Conclusion
 
+Funcion will be overladed if:
+
 - The function has to be different with arguments number.
 - The fuction`s type has to be different.
 - Name of funciton should be same.
