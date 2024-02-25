@@ -21,8 +21,8 @@ Next entities can be non-type template argumets:
 - a liter class type (since cxx20)
 
 > [!warning]
-> As for other fucntion and tempaltes convetsation works too. **This conversation can be cause of ambiguaty**.
+> As for other fucntion and tempaltes convetsation works too. **This conversation can be cause of ambiguauty**.
 > You can find full list at cppreference.com
 
-For avoiding ambiguaty with conversation you can use `auto` instead dedicating of certaing type.
+For avoiding ambiguauty with conversation you can use `auto` instead dedicating of certaing type.
 
