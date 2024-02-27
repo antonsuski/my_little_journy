@@ -13,7 +13,7 @@
             "state": {
               "type": "markdown",
               "state": {
-                "file": "07-scope-duration-and-linkage/13-unnamed-and-inline-namespaces/SUMMARY.md",
+                "file": "10-type-conversion-type-aliases-and-type-deduction/03-numeric-conversions/SUMMARY.md",
                 "mode": "preview",
                 "source": false
               }
@@ -85,7 +85,7 @@
             "state": {
               "type": "backlink",
               "state": {
-                "file": "07-scope-duration-and-linkage/13-unnamed-and-inline-namespaces/SUMMARY.md",
+                "file": "10-type-conversion-type-aliases-and-type-deduction/03-numeric-conversions/SUMMARY.md",
                 "collapseAll": false,
                 "extraContext": false,
                 "sortOrder": "alphabetical",
@@ -102,7 +102,7 @@
             "state": {
               "type": "outgoing-link",
               "state": {
-                "file": "07-scope-duration-and-linkage/13-unnamed-and-inline-namespaces/SUMMARY.md",
+                "file": "10-type-conversion-type-aliases-and-type-deduction/03-numeric-conversions/SUMMARY.md",
                 "linksCollapsed": false,
                 "unlinkedCollapsed": true
               }
@@ -125,7 +125,7 @@
             "state": {
               "type": "outline",
               "state": {
-                "file": "07-scope-duration-and-linkage/13-unnamed-and-inline-namespaces/SUMMARY.md"
+                "file": "10-type-conversion-type-aliases-and-type-deduction/03-numeric-conversions/SUMMARY.md"
               }
             }
           }
@@ -146,43 +146,43 @@
       "command-palette:Open command palette": false
     }
   },
-  "active": "9fe1512c6f2651a5",
+  "active": "a3c3c6a9d0737042",
   "lastOpenFiles": [
-    "11-function-overloading-and-function-templates",
-    "README.md~",
-    "10-type-conversion-type-aliases-and-type-deduction/09-type-deduction-for-functions/SUMMARY.md",
-    "10-type-conversion-type-aliases-and-type-deduction/09-type-deduction-for-functions",
-    "10-type-conversion-type-aliases-and-type-deduction/08-type-deduction-for-objects-using-the-auto-keyword/SUMMARY.md",
-    "10-type-conversion-type-aliases-and-type-deduction/08-type-deduction-for-objects-using-the-auto-keyword",
-    "10-type-conversion-type-aliases-and-type-deduction/07-typedefs-and-type-aliases/SUMMARY.md",
-    "10-type-conversion-type-aliases-and-type-deduction/07-typedefs-and-type-aliases",
-    "10-type-conversion-type-aliases-and-type-deduction/06-explicit-type-conversion-and-static_cast/SUMMARY.md",
-    "10-type-conversion-type-aliases-and-type-deduction/06-explicit-type-conversion-and-static_cast",
-    "10-type-conversion-type-aliases-and-type-deduction/05-arithmetic-conversion/SUMMARY.md",
-    "10-type-conversion-type-aliases-and-type-deduction/05-arithmetic-conversion",
+    "xx-functions/CMakeLists.txt",
+    "xx-functions/7-lambda-intro.cxx",
+    "xx-functions",
+    "11-function-overloading-and-function-templates/09-non-type-template-parameters/SUMMARY.md",
+    "11-function-overloading-and-function-templates/09-non-type-template-parameters",
+    "11-function-overloading-and-function-templates/08-function-templates-with-multiple-template-types/SUMMARY.md",
+    "11-function-overloading-and-function-templates/08-function-templates-with-multiple-template-types",
+    "11-function-overloading-and-function-templates/07-function-template-instatiation/SUMMARY.md",
+    "11-function-overloading-and-function-templates/07-function-template-instatiation",
+    "11-function-overloading-and-function-templates/06-function-templates/SUMMARY.md~",
+    "11-function-overloading-and-function-templates/06-function-templates/SUMMARY.md",
+    "11-function-overloading-and-function-templates/06-function-templates",
+    "11-function-overloading-and-function-templates/6-function-templates",
+    "11-function-overloading-and-function-templates/05-default-arguments/SUMMARY.md~",
+    "11-function-overloading-and-function-templates/05-default-arguments/SUMMARY.md",
+    "11-function-overloading-and-function-templates/05-default-arguments",
+    "11-function-overloading-and-function-templates/04-deleting-functions/SUMMARY.md",
     "10-type-conversion-type-aliases-and-type-deduction/04-narrowing-conversions-list-initialization-constepr-intializers/SUMMARY.md",
-    "10-type-conversion-type-aliases-and-type-deduction/04-narrowing-conversions-list-initialization-constepr-intializers",
     "10-type-conversion-type-aliases-and-type-deduction/03-numeric-conversions/SUMMARY.md",
-    "10-type-conversion-type-aliases-and-type-deduction/03-numeric-conversions",
+    "10-type-conversion-type-aliases-and-type-deduction/05-arithmetic-conversion/SUMMARY.md",
+    "10-type-conversion-type-aliases-and-type-deduction/06-explicit-type-conversion-and-static_cast/SUMMARY.md",
+    "07-scope-duration-and-linkage/13-unnamed-and-inline-namespaces/SUMMARY.md",
+    "11-function-overloading-and-function-templates/03-fucntion-overload-resolution-and-ambiguous-matches/SUMMARY.md",
+    "11-function-overloading-and-function-templates/02-function-overload-differentiation/SUMMARY.md",
+    "11-function-overloading-and-function-templates/01-introduction-to-function-overloading/SUMMARY.md",
+    "10-type-conversion-type-aliases-and-type-deduction/09-type-deduction-for-functions/SUMMARY.md",
+    "10-type-conversion-type-aliases-and-type-deduction/08-type-deduction-for-objects-using-the-auto-keyword/SUMMARY.md",
+    "10-type-conversion-type-aliases-and-type-deduction/07-typedefs-and-type-aliases/SUMMARY.md",
     "10-type-conversion-type-aliases-and-type-deduction/02-floating-point-and-integral-promotion/SUMMARY.md",
-    "10-type-conversion-type-aliases-and-type-deduction/02-floating-point-and-integral-promotion",
-    "10-type-conversion-type-aliases-and-type-deduction/02-floating-point-and-integral-promotion.",
     "10-type-conversion-type-aliases-and-type-deduction/01-implicit-type-conversion/SUMMARY.md",
     "09-error-detection-and-handling/99-summary/SUMMARY.md",
     "09-error-detection-and-handling/06-assert-and-static-assert/SUMMARY.md",
     "09-error-detection-and-handling/05-std-cin-and-handling-invalid-input/SUMMARY.md",
     "09-error-detection-and-handling/04-detecting-and-handling-errors/SUMMARY.md",
     "09-error-detection-and-handling/03-common-semantic-errors-in-cxx/SUMMARY.md",
-    "09-error-detection-and-handling/02-code-coverage/SUMMARY.md",
-    "09-error-detection-and-handling/01-introduction-to-testing-your-code/SUMMARY.md",
-    "07-scope-duration-and-linkage/13-unnamed-and-inline-namespaces/SUMMARY.md",
-    "07-scope-duration-and-linkage/12-using-declarations-and-using-directives/SUMMARY.md",
-    "07-scope-duration-and-linkage/11-scope-duration-linkage-summary/SUMMARY.md",
-    "07-scope-duration-and-linkage/10-static-local-variables/SUMMARY.md",
-    "07-scope-duration-and-linkage/09-sharing-global-constants-across-multiple-files-using-inline-variables/SUMMARY.md",
-    "07-scope-duration-and-linkage/08-why-non-const-global-variables-are-evil/SUMMARY.md",
-    "07-scope-duration-and-linkage/07-external-linkage-and-cariable-forward-declarations/SUMMARY.md",
-    "08-control-flow/99-summary-and-quiz/SUMMARY.md",
-    "08-control-flow/15-global-random-numbers/SUMMARY.md"
+    "09-error-detection-and-handling/02-code-coverage/SUMMARY.md"
   ]
 }
