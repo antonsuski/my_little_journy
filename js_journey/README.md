@@ -2,6 +2,6 @@
 
 # TODO
 - [ ] Do exercise 4.4
-- [ ] Write conspect for chapter 3
+- [x] Write conspect for chapter 3
 - [ ] Write conspect for chapter 4
 
