@@ -1,3 +1,4 @@
+// todo: clarify how to setup local ip from where connection is made
 #include <arpa/inet.h>
 #include <cstring>
 #include <iostream>
