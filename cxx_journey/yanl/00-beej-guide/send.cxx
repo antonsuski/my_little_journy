@@ -13,6 +13,7 @@
 constexpr std::string_view def_port{ "7777" };
 constexpr std::string_view def_dns{ "127.0.0.1" };
 constexpr std::string_view msg_sample{ "Hello, world!" };
+std::string                msg_buff{ "Hello, world!" };
 
 int main(int argc, char* argv[])
 {
@@ -25,6 +26,11 @@ int main(int argc, char* argv[])
 
     char addr_str[INET6_ADDRSTRLEN];
     char port[INET6_ADDRSTRLEN];
+
+    if (argc > 1)
+    {
+        msg_buff = argv[1];
+    }
 
     memset(&hint, 0, sizeof(hint));
     hint.ai_family   = AF_UNSPEC;
@@ -124,34 +130,34 @@ int main(int argc, char* argv[])
                   sizeof(addr_str));
         std::cout << "Incommint ip: " << ipv << ":" << addr_str << std::endl;
 
-        sockaddr_storage* incom_addr;
-        socklen_t         sa_size = sizeof(sockaddr);
-        getpeername(external_socket_fd, reinterpret_cast<sockaddr*>(incom_addr),
-                    &sa_size);
+        sockaddr_storage incom_addr;
+        socklen_t        sa_size = sizeof(sockaddr);
+        getpeername(external_socket_fd,
+                    reinterpret_cast<sockaddr*>(&incom_addr), &sa_size);
 
-        if (incom_addr->ss_family == AF_INET)
+        if (incom_addr.ss_family == AF_INET)
         {
             // taking IPv4 address
-            ipv4    = reinterpret_cast<sockaddr_in*>(incom_addr);
+            ipv4    = reinterpret_cast<sockaddr_in*>(&incom_addr);
             address = &(ipv4->sin_addr);
             ipv     = "IPv4";
         }
         else
         {
             // taking IPv6 address
-            ipv6    = reinterpret_cast<sockaddr_in6*>(incom_addr);
+            ipv6    = reinterpret_cast<sockaddr_in6*>(&incom_addr);
             address = &(ipv6->sin6_addr);
             ipv     = "IPv6";
         }
-        inet_ntop(incom_addr->ss_family, address, addr_str, sizeof(addr_str));
+        inet_ntop(incom_addr.ss_family, address, addr_str, sizeof(addr_str));
         std::cout << "Incommint ip(getpeername): " << ipv << ":" << addr_str
                   << std::endl;
 
-        size_t msg_size = msg_sample.size();
+        size_t msg_size = msg_buff.size();
         int    bytes_sent;
         while (msg_size > 0)
         {
-            if ((bytes_sent = send(external_socket_fd, msg_sample.data(),
+            if ((bytes_sent = send(external_socket_fd, msg_buff.data(),
                                    msg_size, 0)) == -1)
             {
                 perror("send");
